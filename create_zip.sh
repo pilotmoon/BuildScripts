@@ -13,10 +13,10 @@ folder=$BUILT_PRODUCTS_DIR
 appname=$FULL_PRODUCT_NAME
 
 # go to folder and remove existing zip if there is one
-cd $folder
-rm -f $zipname
+cd "$folder"
+rm -f "$zipname"
 
 # create zip file for distribution (-r recursive; -y preserve symlinks)
 echo "Creating $zipname in $folder from $appname"
-zip -r -y $zipname $appname
+zip -r -y "$zipname" "$appname"
 
