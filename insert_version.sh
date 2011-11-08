@@ -12,8 +12,12 @@ git='/usr/bin/git'
 plist=${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}
 key='CFBundleShortVersionString'
 
-# version string for debug builds (e.g. 1.0.2-dev-1-g35d3b126)
+# version string
 version=`$git describe --dirty`
+if [ ${CONFIGURATION} == 'Debug' ]
+then
+    version="$version-debug"
+fi
 
 # clean string if Release build
 if [ $1 == 'clean' ]
@@ -27,4 +31,4 @@ fi
 
 # do the replacement
 echo "Setting $key to $version in Info.plist"
-$buddy -c "Set :CFBundleShortVersionString $version" "$plist"
+$buddy -c "Set :$key $version" "$plist"
