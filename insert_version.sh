@@ -18,14 +18,11 @@ version=`$git describe --dirty`
 # clean string if Release build
 if [ $1 == 'clean' ]
 then
-	if [ ${CONFIGURATION} == 'Release' ]
-	then
-	  # version string for release builds  (strip off everything after dash, e.g. 1.0.2)
-	  # i do this so that i can test appstore submission on builds tagged e.g. 1.0.2-test1 
-	  clean_version=`echo $version | sed 's/\-.*//'`
-	  echo "Release build: Cleaning version string from $version to $clean_version"
-	  version=$clean_version
-	fi
+  # version string for release builds  (strip off everything after dash, e.g. 1.0.2)
+  # i do this so that i can test appstore submission on builds tagged e.g. 1.0.2-test1 
+  clean_version=`echo $version | sed 's/\-.*//'`
+  echo "Cleaning version string from $version to $clean_version"
+  version=$clean_version
 fi
 
 # do the replacement
