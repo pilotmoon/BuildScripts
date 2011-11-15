@@ -7,4 +7,4 @@ plist=${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}
 ver_num=`$buddy -c "Print :CFBundleVersion" "$plist"`
 echo "Ver: $ver_num"
 
-erb ${SRCROOT}/Pop/rnotes.erb > $BUILT_PRODUCTS_DIR/$ver_num.html
+erb ${SRCROOT}/BuildScripts/rnotes.erb > $BUILT_PRODUCTS_DIR/$ver_num.html
