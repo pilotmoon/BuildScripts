@@ -69,7 +69,7 @@ then
     echo "  <title>Version $tag</title>" >> $appcast
     echo "  <sparkle:minimumSystemVersion>$systemversion</sparkle:minimumSystemVersion>" >> $appcast
     echo "  <sparkle:releaseNotesLink>" >> $appcast
-    echo "    $release_notes_webfolder/$version.html" >> $appcast
+    echo "    $release_notes_webfolder/$ver_num.html" >> $appcast
     echo "  </sparkle:releaseNotesLink>" >> $appcast
     echo "  <pubDate>$pubdate</pubDate>" >> $appcast
     echo "  <enclosure url=\"$downloads_webfolder/$zipname\"" >> $appcast
