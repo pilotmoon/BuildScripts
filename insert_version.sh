@@ -16,7 +16,7 @@ key='CFBundleShortVersionString'
 version=`$git describe --dirty`
 if [ ${CONFIGURATION} == 'Debug' ]
 then
-    version="$version-debug"
+    version="$version-d"
 fi
 
 # clean string if Release build
