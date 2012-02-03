@@ -13,10 +13,10 @@ then
 fi
 
 # get the various paths and file names
-zipname="$PRODUCT_NAME-$version.zip"
+zipname=`echo "$PRODUCT_NAME-$version.zip" | tr -d ' '`
 folder=$BUILT_PRODUCTS_DIR
 appname=$FULL_PRODUCT_NAME
-product_lowercase=`echo $PRODUCT_NAME | tr '[A-Z]' '[a-z]'`
+product_lowercase=`echo $PRODUCT_NAME | tr '[A-Z]' '[a-z]' | tr -d ' '`
 
 # go to folder and remove existing zip if there is one
 cd "$folder"
@@ -42,7 +42,7 @@ then
     echo "Signature: $dsasignature"
     
 # filesize
-    filesize=`stat -f %z $zipname`
+    filesize=`stat -f %z "$zipname"`
     echo "Filesize: $filesize"
     
 # date
