@@ -24,7 +24,7 @@ rm -f "$zipname"
 
 # create zip file for distribution (-r recursive; -y preserve symlinks)
 echo "Creating $zipname in $folder from $appname"
-zip -r -y "$zipname" "$appname"
+zip -r -y -q "$zipname" "$appname"
 
 if [ ${CONFIGURATION} == 'Release' ]
 then
@@ -33,7 +33,7 @@ then
     echo "Creating appcast entry"
 
 # get path to key (NM_SPARKLE_KEYS_FOLDER should be set globally)
-    key="$NM_SPARKLE_KEYS_FOLDER/${product_lowercase}_dsa_priv.pem"
+    key="/Users/nick/pilotmoon/keys/${product_lowercase}_dsa_priv.pem"
     echo "Using private key $key"
 
 # creat signature (based on sign_update.rb in Sparkle package)
