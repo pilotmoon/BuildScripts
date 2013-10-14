@@ -63,7 +63,7 @@ then
     echo "Creating $appcast"
 
     release_notes_webfolder="http://softwareupdate.pilotmoon.com/update/$product_lowercase/notes"
-    downloads_webfolder='http://cdn.downloads.pilotmoon.com'
+    downloads_webfolder='http://pilotmoon.com/downloads'
 
     echo "<item>" >> $appcast
     echo "  <title>Version $tag</title>" >> $appcast
