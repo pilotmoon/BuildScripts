@@ -11,6 +11,7 @@ git='/usr/bin/git'
 # the plist file and key to replace
 plist=${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}
 key='CFBundleShortVersionString'
+record_key='NMOriginalBundleShortVersionString'
 
 # version string
 version=`$git describe --dirty`
@@ -18,6 +19,11 @@ if [ ${CONFIGURATION} == 'Debug' ]
 then
     version="$version-d"
 fi
+
+# add the key to record the original build version
+echo "Setting $record_key to $version in Info.plist"
+$buddy -c "Delete :$record_key" "$plist"
+$buddy -c "Add :$record_key string $version" "$plist"
 
 # clean string if Release build
 if [ $1 == 'clean' ]
