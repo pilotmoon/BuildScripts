@@ -14,7 +14,7 @@ key='CFBundleShortVersionString'
 record_key='NMOriginalBundleShortVersionString'
 
 # version string
-version=`$git describe --dirty`
+version=`$git describe --dirty --tags`
 
 # clean if it has a rc tag
 if [[ "$version" =~ ^[0-9\.]+-rc[0-9]+$ ]] ; then
