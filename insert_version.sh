@@ -15,6 +15,16 @@ record_key='NMOriginalBundleShortVersionString'
 
 # version string
 version=`$git describe --dirty`
+
+# clean if it has a rc tag
+if [[ "$version" =~ ^[0-9\.]+-rc[0-9]+$ ]] ; then
+  echo "Is rc version"
+  clean="clean"
+else
+  echo "Not rc version"
+fi
+
+# add debug suffix if debug
 if [ ${CONFIGURATION} == 'Debug' ]
 then
     version="$version-d"
@@ -25,8 +35,8 @@ echo "Setting $record_key to $version in Info.plist"
 $buddy -c "Delete :$record_key" "$plist"
 $buddy -c "Add :$record_key string $version" "$plist"
 
-# clean string if Release build
-if [ $1 == 'clean' ]
+# clean string if indicated
+if [[ $clean ]]
 then
   # version string for release builds  (strip off everything after dash, e.g. 1.0.2)
   # i do this so that i can test appstore submission on builds tagged e.g. 1.0.2-test1 
