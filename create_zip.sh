@@ -5,12 +5,7 @@ buddy='/usr/libexec/PlistBuddy'
 plist=${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}
 
 # get the version label
-git='/usr/bin/git'
-version=`$git describe --dirty`
-if [ ${CONFIGURATION} == 'Debug' ]
-then
-    version="$version-debug"
-fi
+version=`$buddy -c "Print :CFBundleShortVersionString" "$plist"`
 
 # get the various paths and file names
 zipname=`echo "$PRODUCT_NAME-$version.zip" | tr -d ' '`
