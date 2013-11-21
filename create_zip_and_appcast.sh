@@ -1,5 +1,14 @@
 # For running in post-build step in scheme.
 # Zips app and creates an appcast entry.
+echo "In script"
+pwd
+
+scripts_dir=`dirname $0`
+rnotes_file=$1
+
+
+echo "Scripts dir ${scripts_dir}"
+echo "Scripts dir ${rnotes_file}"
 
 buddy='/usr/libexec/PlistBuddy'
 plist=${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}
@@ -38,7 +47,6 @@ echo "Filesize: $filesize"
 # date
 pubdate=`date "+%a, %d %h %Y %T %z"`
 echo "Date: $pubdate"
-
 # version num
 ver_num=`$buddy -c "Print :CFBundleVersion" "$plist"`
 echo "Ver: $ver_num"
@@ -68,6 +76,10 @@ echo "    sparkle:shortVersionString=\"$version\"" >> $appcast
 echo "    length=\"$filesize\"" >> $appcast
 echo "    type=\"application/octet-stream\" />" >> $appcast
 echo "</item>" >> $appcast
+
+echo "Building Release Notes"
+cd `dirname $rnotes_file`
+erb $scripts_dir/rnotes.erb > ${BUILT_PRODUCTS_DIR}/$ver_num.html
 
 open $folder
 
