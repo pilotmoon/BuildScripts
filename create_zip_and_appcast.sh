@@ -52,8 +52,8 @@ appcast="appcast-$version.txt"
 rm -f $appcast
 echo "Creating $appcast"
 
-release_notes_webfolder="http://softwareupdate.pilotmoon.com/update/$product_lowercase/notes"
-downloads_webfolder='http://pilotmoon.com/downloads'
+release_notes_webfolder="https://softwareupdate.pilotmoon.com/update/$product_lowercase/notes"
+downloads_webfolder='https://pilotmoon.com/downloads'
 
 echo "<item>" >> $appcast
 echo "  <title>Version $tag</title>" >> $appcast
