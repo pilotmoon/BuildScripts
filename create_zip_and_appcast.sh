@@ -55,31 +55,34 @@ echo "Ver: $ver_num"
 systemversion=`$buddy -c "Print :LSMinimumSystemVersion" "$plist"`
 echo "Min system version: $systemversion"
 
+echo "Building Release Notes"
+
+pushd .
+cd `dirname $rnotes_file`
+rnotes=`erb $scripts_dir/rnotes.erb`
+#rnotes=`php -r "echo htmlentities('$rnotes');"`
+popd
+
 # create appcast
 appcast="appcast-$version.txt"
 rm -f $appcast
 echo "Creating $appcast"
 
-release_notes_webfolder="https://softwareupdate.pilotmoon.com/update/$product_lowercase/notes"
 downloads_webfolder='https://pilotmoon.com/downloads'
 
+
 echo "<item>" >> $appcast
-echo "  <title>Version $tag</title>" >> $appcast
-echo "  <sparkle:minimumSystemVersion>$systemversion</sparkle:minimumSystemVersion>" >> $appcast
-echo "  <sparkle:releaseNotesLink>" >> $appcast
-echo "    $release_notes_webfolder/$ver_num.html" >> $appcast
-echo "  </sparkle:releaseNotesLink>" >> $appcast
+echo "  <title>Version $version</title>" >> $appcast
 echo "  <pubDate>$pubdate</pubDate>" >> $appcast
+echo "  <sparkle:minimumSystemVersion>$systemversion</sparkle:minimumSystemVersion>" >> $appcast
 echo "  <enclosure url=\"$downloads_webfolder/$zipname\"" >> $appcast
 echo "    sparkle:version=\"$ver_num\"" >> $appcast
 echo "    sparkle:shortVersionString=\"$version\"" >> $appcast
 echo "    length=\"$filesize\"" >> $appcast
 echo "    type=\"application/octet-stream\" />" >> $appcast
+echo "  <description><![CDATA[$rnotes]]></description>" >> $appcast
 echo "</item>" >> $appcast
 
-echo "Building Release Notes"
-cd `dirname $rnotes_file`
-erb $scripts_dir/rnotes.erb > ${BUILT_PRODUCTS_DIR}/$ver_num.html
 
 open $folder
 
