@@ -19,7 +19,7 @@ version=`$git describe --dirty --tags`
 # clean if it has a rc tag
 if [[ "$version" =~ ^[0-9\.]+-rc[0-9]+$ ]] ; then
   echo "Is rc version"
-  clean="clean"
+  clean=$1
 else
   echo "Not rc version"
 fi
