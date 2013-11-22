@@ -22,9 +22,13 @@ folder=$BUILT_PRODUCTS_DIR
 appname=$FULL_PRODUCT_NAME
 product_lowercase=`echo $PRODUCT_NAME | tr '[A-Z]' '[a-z]' | tr -d ' '`
 
-# go to folder and remove existing zip if there is one
+# go to folder and remove existing zips and txt files
 cd "$folder"
-rm -f "$zipname"
+ls
+echo "removing zip and txt files"
+rm -f -v *.zip
+rm -f -v *.txt
+echo "done zip and txt files"
 
 # check that the app is signed
 codesign -d -vvvv "$appname"
