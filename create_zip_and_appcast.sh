@@ -72,7 +72,7 @@ appcast="appcast-$version.txt"
 rm -f $appcast
 echo "Creating $appcast"
 
-downloads_webfolder='https://pilotmoon.com/downloads'
+downloads_webfolder='https://d20vhy8jiniubf.cloudfront.net/downloads'
 
 
 echo "<item>" >> $appcast
