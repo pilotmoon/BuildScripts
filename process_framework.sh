@@ -2,7 +2,7 @@ nm_framework_name=$1
 nm_framework_bin="$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/$nm_framework_name.framework/Versions/A/$nm_framework_name"
 
 # strip resource folders
-./remove_langs.sh "$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/$nm_framework_name.framework/Resources/" $nm_allowed_languages
+$nm_root/remove_langs.sh "$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/$nm_framework_name.framework/Resources/" $nm_allowed_languages
 
 # remove headers
 rm -rf "$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/$nm_framework_name.framework/Headers"
