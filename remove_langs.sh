@@ -1,5 +1,5 @@
 # args: foldername allow1 allow2 allow3 ...
-for x in $1/*.lproj; do
+for x in "$1"/*.lproj; do
 	code=`echo "$x" | sed 's/.*\/\(.*\)\.lproj/\1/' | tr '[:upper:]' '[:lower:]' | tr '_' '-'`
 	allow=0
 	for allowed_code in "${@:2}"; do
