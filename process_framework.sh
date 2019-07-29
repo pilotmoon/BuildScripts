@@ -14,4 +14,4 @@ if lipo "$nm_framework_bin" -verify_arch i386
 fi
 
 # code sign
-codesign -s "$nm_signing_identity" -f "$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/$nm_framework_name.framework/Versions/A"
+codesign -o runtime -s "$nm_signing_identity" -f "$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/$nm_framework_name.framework/Versions/A"
