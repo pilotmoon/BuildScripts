@@ -37,7 +37,7 @@ buildnum=`expr $buildnum + $buildnum_offset`
 echo "adjusted build number is $buildnum"
 
 # version string
-version=`$git describe --dirty --tags`
+version=`$git describe --dirty`
 echo "build number from git is $version"
 
 # add debug suffix if debug
