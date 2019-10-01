@@ -38,7 +38,17 @@ echo "adjusted build number is $buildnum"
 
 # version string
 version=`$git describe --dirty`
-echo "build number from git is $version"
+echo "description from git is $version"
+
+# insert buildnum in place of what git-describe gives us
+version=`echo "$version" | sed -E "s/\-[0-9]+(\-g[0-9a-f]+)/\-$buildnum/"`
+echo "modified description is $version"
+
+## is this beta channel
+clean_version=`echo $version | sed 's/\-.*//'`
+if [[ "$clean_version" != "$version" ]]; then
+  channel="Beta"
+fi
 
 # add debug suffix if debug
 if [[ "${CONFIGURATION}" == 'Debug' ]]; then
@@ -51,11 +61,20 @@ echo "Setting $record_key to $version in $plist"
 $buddy -c "Delete :$record_key" "$plist"
 $buddy -c "Add :$record_key string $version" "$plist"
 
+# make jekyll template for appcast
+metafile="${BUILT_PRODUCTS_DIR}/`date +%F`-$PRODUCT_NAME-$version.md"
+rm "${BUILT_PRODUCTS_DIR}"/*.md
+echo "date: `date +'%F %H:00:00 %z'`" > "$metafile"
+echo "product: ${PRODUCT_NAME}" >> "$metafile"
+echo "channel: $channel" >> "$metafile"
+echo "version: $buildnum" >> "$metafile"
+echo "short_version_string: $version" >> "$metafile"
+echo "---\n" >> "$metafile"
+
 # clean string if indicated
 if [[ "$clean" == "clean" ]]; then
   # version string for release builds  (strip off everything after dash, e.g. 1.0.2)
-  # i do this so that i can test appstore submission on builds tagged e.g. 1.0.2-test1 
-  clean_version=`echo $version | sed 's/\-.*//'`
+  # i do this so that i can test appstore submission on builds tagged e.g. 1.0.2-test1
   echo "Cleaning version string from $version to $clean_version"
   version=$clean_version
 fi
