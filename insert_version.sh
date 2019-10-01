@@ -53,7 +53,7 @@ clean_version=`echo $version | sed 's/\-.*//'`
 if [[ "$clean" != "clean" ]]; then
 
     # if version is not actually tagged, insert buildnum in place of what git-describe gives us
-    version=`echo "$version" | sed -E "s/^.+-g[0-9a-f]{7}/\beta-$buildnum/"`
+    version=`echo "$version" | sed -E "s/^.+-g[0-9a-f]{7}/\Build $buildnum/"`
     echo "modified description is $version"
 
     # add debug suffix if debug
@@ -68,21 +68,40 @@ if [[ "$clean" != "clean" ]]; then
       appcast_suffix="-beta"
     fi
 
+    # make slugs
+    product_slug=`echo "${PRODUCT_NAME}" | tr '[:upper:]' '[:lower:]'`
+    version_slug=`echo "${version}" | tr ' ' '-' | tr '[:upper:]' '[:lower:]'`
+    product_camel=`echo "${PRODUCT_NAME}" | sed 's/ //'`
+    product_file="$product_camel-$version_slug.zip"
+
     # insert appcast feed url
-    slug=`tr '[:upper:]' '[:lower:]' <<< "${PRODUCT_NAME}"`
-    appcast="https://softwareupdate.pilotmoon.com/update/${slug}/appcast${appcast_suffix}.xml"
+    appcast="https://softwareupdate.pilotmoon.com/update/${product_slug}/appcast${appcast_suffix}.xml"
     echo "Setting $appcast_key to $appcast in $plist"
     $buddy -c "Add :$appcast_key string $appcast" "$plist"
 
     # make jekyll template for appcast
-    metafile="${BUILT_PRODUCTS_DIR}/`date +%F`-$PRODUCT_NAME-$version.md"
+    metafile="${BUILT_PRODUCTS_DIR}/`date +%F`-$product_camel-$version_slug.md"
     rm "${BUILT_PRODUCTS_DIR}"/*.md
-    echo "date: `date +'%F %H:00:00 %z'`" > "$metafile"
+
+    msv=`$buddy -c "Print :LSMinimumSystemVersion" "$plist"`
+    echo "min system version: $msv"
+
+    echo "---" > "$metafile"
+    echo "layout: appcast" >> "$metafile"
+    echo "date: `date +'%F %H:00:00 %z'`" >> "$metafile"
     echo "product: ${PRODUCT_NAME}" >> "$metafile"
     echo "channel: $channel" >> "$metafile"
     echo "version: $buildnum" >> "$metafile"
+    echo "filename: $product_file" >> "$metafile"
     echo "short_version_string: $version" >> "$metafile"
+    echo "size: " >> "$metafile"
+    echo "minimum_system_version: $msv" >> "$metafile"
     echo "---\n" >> "$metafile"
+
+    # copy to jekyll dir
+    if [[ "${CONFIGURATION}" == 'Release' ]]; then
+        open "${BUILT_PRODUCTS_DIR}"
+    fi
 else
   # MAS release build
   echo "Cleaning version string from $version to $clean_version"
@@ -104,4 +123,3 @@ $buddy -c "Set :$num_key $buildnum" "$plist"
 echo "Setting $num_key to $buildnum in $sym_plist"
 $buddy -c "Set :$num_key $buildnum" "$sym_plist"
 
-open "${BUILT_PRODUCTS_DIR}"
