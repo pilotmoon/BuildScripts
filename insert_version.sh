@@ -25,6 +25,9 @@ git='/usr/bin/git'
 plist="${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}"
 sym_plist="${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}.dSYM/Contents/Info.plist"
 
+# where to put jekyll template
+jekyll_releases_dir="~/webgit/pilotmoon.com/jekyll/_releases"
+
 key='CFBundleShortVersionString'
 num_key='CFBundleVersion'
 record_key='NMVersionDescription'
@@ -96,11 +99,13 @@ if [[ "$clean" != "clean" ]]; then
     echo "short_version_string: $version" >> "$metafile"
     echo "size: " >> "$metafile"
     echo "minimum_system_version: $msv" >> "$metafile"
-    echo "---\n" >> "$metafile"
+    echo "draft: yes" >> "$metafile"
+    echo "---\n\nYour notes here.\n" >> "$metafile"
 
     # copy to jekyll dir
     if [[ "${CONFIGURATION}" == 'Release' ]]; then
         open "${BUILT_PRODUCTS_DIR}"
+        cp "$metafile.draft" "$jekyll_releases_dir"
     fi
 else
   # MAS release build
