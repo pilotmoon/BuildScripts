@@ -27,7 +27,8 @@ sym_plist="${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}.dSYM/Contents/Info.plist"
 
 key='CFBundleShortVersionString'
 num_key='CFBundleVersion'
-record_key='NMOriginalBundleShortVersionString'
+record_key='NMVersionDescription'
+appcast_key="SUFeedURL"
 
 #build number (needs first commit to be tagged 'buildbase')
 buildbase_string=`$git describe --match buildbase`
@@ -40,44 +41,55 @@ echo "adjusted build number is $buildnum"
 version=`$git describe --dirty`
 echo "description from git is $version"
 
-# insert buildnum in place of what git-describe gives us
-version=`echo "$version" | sed -E "s/^.+-g[0-9a-f]{7}/\β$buildnum/"`
-echo "modified description is $version"
-
-## is this beta channel
-clean_version=`echo $version | sed 's/\-.*//'`
-if [[ "$clean_version" != "$version" ]]; then
-  channel="Beta"
-fi
-
-# add debug suffix if debug
-if [[ "${CONFIGURATION}" == 'Debug' ]]; then
-	echo "it is a debug build, appending -d"
-    version="$version-d"
-fi
-
-# add the key to record the original version string
+# add the key to record the original git description
 echo "Setting $record_key to $version in $plist"
-$buddy -c "Delete :$record_key" "$plist"
 $buddy -c "Add :$record_key string $version" "$plist"
 
-# make jekyll template for appcast
-metafile="${BUILT_PRODUCTS_DIR}/`date +%F`-$PRODUCT_NAME-$version.md"
-rm "${BUILT_PRODUCTS_DIR}"/*.md
-echo "date: `date +'%F %H:00:00 %z'`" > "$metafile"
-echo "product: ${PRODUCT_NAME}" >> "$metafile"
-echo "channel: $channel" >> "$metafile"
-echo "version: $buildnum" >> "$metafile"
-echo "short_version_string: $version" >> "$metafile"
-echo "---\n" >> "$metafile"
+# clean version string for MAS builds (strip off everything after dash, e.g. 1.0.2)
+# i do this so that i can test appstore submission on builds tagged e.g. 1.0.2-test1
+clean_version=`echo $version | sed 's/\-.*//'`
 
-# clean string if indicated
-if [[ "$clean" == "clean" ]]; then
-  # version string for release builds  (strip off everything after dash, e.g. 1.0.2)
-  # i do this so that i can test appstore submission on builds tagged e.g. 1.0.2-test1
+# insert appcast if not cleaning for MAS
+if [[ "$clean" != "clean" ]]; then
+
+    # if version is not actually tagged, insert buildnum in place of what git-describe gives us
+    version=`echo "$version" | sed -E "s/^.+-g[0-9a-f]{7}/\beta-$buildnum/"`
+    echo "modified description is $version"
+
+    # add debug suffix if debug
+    if [[ "${CONFIGURATION}" == 'Debug' ]]; then
+        echo "it is a debug build, appending -d"
+        version="$version-d"
+    fi
+
+    # is this beta channel
+    if [[ "$clean_version" != "$version" ]]; then
+      channel="Beta"
+      appcast_suffix="-beta"
+    fi
+
+    # insert appcast feed url
+    slug=`tr '[:upper:]' '[:lower:]' <<< "${PRODUCT_NAME}"`
+    appcast="https://softwareupdate.pilotmoon.com/update/${slug}/appcast${appcast_suffix}.xml"
+    echo "Setting $appcast_key to $appcast in $plist"
+    $buddy -c "Add :$appcast_key string $appcast" "$plist"
+
+    # make jekyll template for appcast
+    metafile="${BUILT_PRODUCTS_DIR}/`date +%F`-$PRODUCT_NAME-$version.md"
+    rm "${BUILT_PRODUCTS_DIR}"/*.md
+    echo "date: `date +'%F %H:00:00 %z'`" > "$metafile"
+    echo "product: ${PRODUCT_NAME}" >> "$metafile"
+    echo "channel: $channel" >> "$metafile"
+    echo "version: $buildnum" >> "$metafile"
+    echo "short_version_string: $version" >> "$metafile"
+    echo "---\n" >> "$metafile"
+else
+  # MAS release build
   echo "Cleaning version string from $version to $clean_version"
   version=$clean_version
 fi
+
+echo "final version is $version"
 
 # do the replacement
 echo "Setting $key to $version in $plist"
@@ -92,3 +104,4 @@ $buddy -c "Set :$num_key $buildnum" "$plist"
 echo "Setting $num_key to $buildnum in $sym_plist"
 $buddy -c "Set :$num_key $buildnum" "$sym_plist"
 
+open "${BUILT_PRODUCTS_DIR}"
