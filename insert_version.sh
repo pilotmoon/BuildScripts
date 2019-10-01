@@ -41,7 +41,7 @@ version=`$git describe --dirty`
 echo "description from git is $version"
 
 # insert buildnum in place of what git-describe gives us
-version=`echo "$version" | sed -E "s/\-[0-9]+(\-g[0-9a-f]+)/\-$buildnum/"`
+version=`echo "$version" | sed -E "s/^.+-g[0-9a-f]{7}/\β$buildnum/"`
 echo "modified description is $version"
 
 ## is this beta channel
