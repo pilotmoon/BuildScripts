@@ -26,7 +26,7 @@ plist="${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}"
 sym_plist="${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}.dSYM/Contents/Info.plist"
 
 # where to put jekyll template
-jekyll_releases_dir="~/webgit/pilotmoon.com/jekyll/_releases"
+jekyll_releases_dir="/Users/nick/webgit/pilotmoon.com/jekyll/_releases"
 
 key='CFBundleShortVersionString'
 num_key='CFBundleVersion'
@@ -83,8 +83,7 @@ if [[ "$clean" != "clean" ]]; then
     $buddy -c "Add :$appcast_key string $appcast" "$plist"
 
     # make jekyll template for appcast
-    metafile="${BUILT_PRODUCTS_DIR}/`date +%F`-$product_camel-$version_slug.md"
-    rm "${BUILT_PRODUCTS_DIR}"/*.md
+    metafile="${BUILT_PRODUCTS_DIR}/`date +%F`-$product_camel-$version_slug.md.draft"
 
     msv=`$buddy -c "Print :LSMinimumSystemVersion" "$plist"`
     echo "min system version: $msv"
@@ -99,13 +98,13 @@ if [[ "$clean" != "clean" ]]; then
     echo "short_version_string: $version" >> "$metafile"
     echo "size: " >> "$metafile"
     echo "minimum_system_version: $msv" >> "$metafile"
-    echo "draft: yes" >> "$metafile"
+    echo "published: no" >> "$metafile"
     echo "---\n\nYour notes here.\n" >> "$metafile"
 
     # copy to jekyll dir
     if [[ "${CONFIGURATION}" == 'Release' ]]; then
         open "${BUILT_PRODUCTS_DIR}"
-        cp "$metafile.draft" "$jekyll_releases_dir"
+        cp "$metafile" "$jekyll_releases_dir"
     fi
 else
   # MAS release build
