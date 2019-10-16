@@ -12,6 +12,3 @@ rm -rf "$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/$nm_framework_name.framework
 if lipo "$nm_framework_bin" -verify_arch i386
 	then lipo -remove i386 "$nm_framework_bin" -output "$nm_framework_bin"
 fi
-
-# code sign
-codesign --timestamp=none -o runtime -s "$nm_signing_identity" -f "$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/$nm_framework_name.framework/Versions/A"
