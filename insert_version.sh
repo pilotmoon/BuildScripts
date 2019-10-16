@@ -37,6 +37,11 @@ branch=`$git symbolic-ref --short HEAD`
 if [[ "$branch" != "master" ]]; then
     echo "Branch is: $branch"
     echo "Not on master branch; not processing version number"
+    githash=`git rev-parse --short=7 HEAD`
+    suffix=`git diff --quiet || echo '-dirty'`
+    devver="g${githash}${suffix}"
+    echo "Setting $key to $devver in $plist"
+    $buddy -c "Set :$key $devver" "$plist"
     exit 1
 fi
 
