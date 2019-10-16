@@ -33,6 +33,13 @@ num_key='CFBundleVersion'
 record_key='NMVersionDescription'
 appcast_key="SUFeedURL"
 
+branch=`$git symbolic-ref --short HEAD`
+if [[ "$branch" != "master" ]]; then
+    echo "Branch is: $branch"
+    echo "Not on master branch; not processing version number"
+    exit 1
+fi
+
 #build number (needs first commit to be tagged 'buildbase')
 buildbase_string=`$git describe --match buildbase`
 buildnum=`echo "$buildbase_string" | sed 's/buildbase\-//' | sed 's/-g.*//'`
