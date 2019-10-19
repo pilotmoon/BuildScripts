@@ -95,7 +95,7 @@ if [[ "$clean" != "clean" ]]; then
     $buddy -c "Add :$appcast_key string $appcast" "$plist"
 
     # make jekyll template for appcast
-    metafile="${BUILT_PRODUCTS_DIR}/`date +%F`-$product_camel-$version_slug.md.draft"
+    metafile="${BUILT_PRODUCTS_DIR}/`date +%F`-$product_camel-$version_slug.md"
 
     msv=`$buddy -c "Print :LSMinimumSystemVersion" "$plist"`
     echo "min system version: $msv"
