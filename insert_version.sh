@@ -31,7 +31,7 @@ jekyll_releases_dir="/Users/nick/webgit/pilotmoon.com/jekyll/_releases"
 key='CFBundleShortVersionString'
 num_key='CFBundleVersion'
 record_key='NMVersionDescription'
-appcast_key="SUFeedURL"
+beta_key="NMBetaRelease"
 
 branch=`$git symbolic-ref --short HEAD`
 if [[ "$branch" != "master" ]]; then
@@ -80,7 +80,9 @@ if [[ "$clean" != "clean" ]]; then
     # is this beta channel
     if [[ "$clean_version" != "$version" ]]; then
       channel="Beta"
-      appcast_suffix="-beta"
+      echo "Adding $beta_key in $plist"
+      $buddy -c "Add :$beta_key bool" "$plist"
+      $buddy -c "Set :$beta_key YES" "$plist"
     fi
 
     # make slugs
@@ -88,11 +90,6 @@ if [[ "$clean" != "clean" ]]; then
     version_slug=`echo "${version}" | tr ' ' '-' | tr '[:upper:]' '[:lower:]'`
     product_camel=`echo "${PRODUCT_NAME}" | sed 's/ //'`
     product_file="$product_camel-$version_slug.zip"
-
-    # insert appcast feed url
-    appcast="https://softwareupdate.pilotmoon.com/update/${product_slug}/appcast${appcast_suffix}.xml"
-    echo "Setting $appcast_key to $appcast in $plist"
-    $buddy -c "Add :$appcast_key string $appcast" "$plist"
 
     # make jekyll template for appcast
     metafile="${BUILT_PRODUCTS_DIR}/`date +%F`-$product_camel-$version_slug.md"
