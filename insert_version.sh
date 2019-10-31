@@ -31,7 +31,7 @@ jekyll_releases_dir="/Users/nick/webgit/pilotmoon.com/jekyll/_releases"
 key='CFBundleShortVersionString'
 num_key='CFBundleVersion'
 record_key='NMVersionDescription'
-beta_key="NMBetaRelease"
+channel_key="NMReleaseChannel"
 
 branch=`$git symbolic-ref --short HEAD`
 if [[ "$branch" != "master" ]]; then
@@ -80,9 +80,8 @@ if [[ "$clean" != "clean" ]]; then
     # is this beta channel
     if [[ "$clean_version" != "$version" ]]; then
       channel="Beta"
-      echo "Adding $beta_key in $plist"
-      $buddy -c "Add :$beta_key bool" "$plist"
-      $buddy -c "Set :$beta_key YES" "$plist"
+    else
+      channel="Production"
     fi
 
     # make slugs
@@ -119,7 +118,13 @@ else
   # MAS release build
   echo "Cleaning version string from $version to $clean_version"
   version=$clean_version
+  channel="MAS"
 fi
+
+# set channel key
+echo "Setting $channel_key to $channel in $plist"
+$buddy -c "Add :$channel_key string" "$plist"
+$buddy -c "Set :$channel_key $channel" "$plist"
 
 echo "final version is $version"
 
