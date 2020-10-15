@@ -26,7 +26,7 @@ plist="${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}"
 sym_plist="${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}.dSYM/Contents/Info.plist"
 
 # where to put jekyll template
-jekyll_releases_dir="/Users/nick/webgit/pilotmoon.com/jekyll/_releases"
+jekyll_releases_dir="/Users/nick/source/pilotmoon.com/www/jekyll/_releases"
 
 key='CFBundleShortVersionString'
 num_key='CFBundleVersion'
