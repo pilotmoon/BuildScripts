@@ -68,7 +68,7 @@ clean_version=`echo $version | sed 's/\-.*//'`
 if [[ "$clean" != "clean" ]]; then
 
     # if version is not actually tagged, insert buildnum in place of what git-describe gives us
-    version=`echo "$version" | sed -E "s/^.+-g[0-9a-f]{7}/\Build $buildnum/"`
+    version=`echo "$version" | sed -E "s/^.+-g[0-9a-f]{7}/\b$buildnum/"`
     echo "modified description is $version"
 
     # add debug suffix if debug
