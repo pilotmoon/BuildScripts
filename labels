@@ -38,7 +38,8 @@ show channel version_string
 
 # adjust for MAS by removing the first hyphen and all that follows
 if [[ ${edition:u} == "MAS" && ${channel} == "Production" ]]; then
-	version_string=$(echo $version_string | cut -d'-' -f1)
+	export original_version_string=$version_string
+  version_string=$(echo $version_string | cut -d'-' -f1)
 fi
 
-export version_num version_string channel edition
+export version_num version_string channel edition 

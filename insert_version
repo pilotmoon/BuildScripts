@@ -13,6 +13,7 @@ key='CFBundleShortVersionString'
 num_key='CFBundleVersion'
 channel_key="PilotmoonReleaseChannel"
 edition_key="PilotmoonReleaseEdition"
+internal_key="PilotmoonInternalVersionString"
 
 # the plist files and keys to replace
 plist="${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}"
@@ -27,6 +28,12 @@ $buddy -c "Set :$channel_key $channel" "$plist"
 echo "Setting $edition_key to $edition in $plist"
 $buddy -c "Add :$edition_key string" "$plist" || true
 $buddy -c "Set :$edition_key $edition" "$plist"
+
+# original version
+if [[ -v original_version_string ]]; then
+  echo "Setting $internal_key to $original_version_string in $plist"
+  $buddy -c "Set :$internal_key $original_version_string" "$plist"
+fi
 
 # main plist
 echo "Setting $key to $version_string in $plist"
