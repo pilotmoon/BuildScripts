@@ -32,6 +32,7 @@ $buddy -c "Set :$edition_key $edition" "$plist"
 # original version
 if [[ -v original_version_string ]]; then
   echo "Setting $internal_key to $original_version_string in $plist"
+  $buddy -c "Add :$internal_key string" "$plist" || true
   $buddy -c "Set :$internal_key $original_version_string" "$plist"
 fi
 
