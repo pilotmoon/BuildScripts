@@ -1,0 +1,28 @@
+#!/bin/zsh
+set -eu; base=${0:a:h}; source $base/common
+
+# get latest subdir of temp containing a uuid file
+info_file=($base/temp/*/info.json(.oc[1]))
+cd ${info_file:h}
+
+# read in params
+jsonload $info_file uuid app_path app_zip
+
+# check status
+echo "checking notarization status for uuid:" $uuid
+json=$(altool --notarization-info $uuid)
+echo $json | jq
+
+# continue only when Apple has done the deed
+[[ $(param $json notarization-info Status) == success ]] || { echo "not cooked yet"; exit 1 }
+
+# staple it
+echo "stapling ${app_path}"
+xcrun stapler staple $app_path
+
+# re-zip
+echo "zipping stapled app to:" ${app_zip}
+/usr/bin/ditto -c -k --keepParent $app_path $app_zip
+
+stapled='yes'; jsonsave $info_file app_zip stapled
+echo 'stapled flag added to file'

@@ -1,0 +1,44 @@
+#!/bin/zsh
+edition=${1:-'SA':u} # MAS or SA (default: SA)
+version_number_offset=${2:-'0'} # add this to build number (default 0)
+show edition version_number_offset
+
+# get the branch name, dirty status and commit reference
+branch=$(git symbolic-ref --short HEAD)
+gitref=g$(git rev-parse --short=7 HEAD)
+dirty=$(git diff --quiet || print 1)
+debug=$([[ $CONFIGURATION == Release ]] || print 1)
+show branch gitref dirty debug
+
+# the build version number derived from buildbase tag
+version_num=$(git describe --long --match "buildbase" | cut -d'-' -f2)
+version_num=$(($version_num + $version_number_offset))
+show version_num
+
+# the version tag, if any; 'v' prefix required
+version_tag=$(git describe --exact-match --match "v*" || print '')
+show version_tag
+
+# Dev, Beta or Release?
+if [[ $branch != "master" || $dirty || $debug ]]; then
+	channel="Development";
+	version_string="${gitref}"
+  if [[ $dirty ]]; then version_string="${version_string}-dty"; fi
+  if [[ $debug ]]; then version_string="${version_string}-dbg"; fi
+else
+	if [[ $version_tag ]]; then # this commit has its own version tag
+		channel="Production"
+		version_string=${version_tag#v} # strip off v prefix			
+	else
+		channel="Beta"		
+		version_string="Build $version_num"
+	fi
+fi
+show channel version_string
+
+# adjust for MAS by removing the first hyphen and all that follows
+if [[ ${edition:u} == "MAS" && ${channel} == "Production" ]]; then
+	version_string=$(echo $version_string | cut -d'-' -f1)
+fi
+
+export version_num version_string channel edition

@@ -1,0 +1,48 @@
+#!/bin/zsh
+set -eu; base=${0:a:h}; source $base/common
+
+# save or load the environment variables
+memo_vars vars_archive
+
+# get edition
+edition=${${=TARGET_NAME}[2]:u}
+[[ $edition == 'SA' || $edition == 'MAS' ]] || { print "bad edition: " $edition; exit 1 }
+show edition
+
+# make a temp dir
+mkdir -p $base/temp/$(uuidgen); cd $_
+
+# make initial info file
+jsonify base > info.json
+
+# export app from xcode
+export_path=$(pwd)/export; show export_path
+/usr/bin/xcodebuild -exportArchive \
+  -archivePath $ARCHIVE_PATH \
+  -exportOptionsPlist ${base}/xcode/ExportOptions_$edition.plist \
+  -exportPath $export_path
+
+# get app info
+info() { /usr/libexec/PlistBuddy -c "Print :$1" $export_path/$INFOPLIST_PATH }
+version=$(info CFBundleShortVersionString)
+build=$(info CFBundleVersion)
+bundle_id=$(info CFBundleIdentifier)
+channel=$(info PilotmoonReleaseChannel)
+show version build bundle_id channel
+
+# construct naming slug for zip files
+slug=${PRODUCT_NAME:gs/ /}-${version:l:gs/ /-}; show slug
+
+# make dsyms zip
+dsyms_zip=${PWD}/${slug}-dSYM.zip
+/usr/bin/ditto -c -k $ARCHIVE_DSYMS_PATH $dsyms_zip
+
+# make app zip
+app_path=${export_path}/${PRODUCT_NAME}.app
+app_zip=${PWD}/${slug}.zip
+show app_path app_zip
+/usr/bin/ditto -c -k --keepParent $app_path $app_zip
+
+# save vars to json file
+jsonsave info.json slug app_path app_zip dsyms_zip version build channel bundle_id
+echo 'info saved to file'

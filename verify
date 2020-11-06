@@ -1,0 +1,35 @@
+#!/bin/zsh
+set -ee; base=${0:a:h}; source $base/common
+
+# get latest subdir of temp containing a info file
+info_file=($base/temp/*/info.json(.oc[1]))
+cd ${info_file:h}
+
+# load vars
+jsonload $info_file app_zip version build channel slug
+
+# get zip file size
+size=$(stat -f%z $app_zip); show size
+
+# unzip and verify signing
+verify_dir=${PWD}/verify
+mkdir -p $verify_dir; rm -rf *.app(N)
+echo "unzipping to $verify_dir"
+/usr/bin/ditto -xk $app_zip $verify_dir
+
+# infer .app path
+app_path=($verify_dir/*.app(/oc[1]))
+echo "zip contains ${app_path:t}"
+
+echo; echo "* verifying with codesign"
+/usr/bin/codesign -dvv $app_path
+
+echo; echo "* verifying with spctl"
+/usr/sbin/spctl -avv $app_path
+
+if prompt "Open in Taccy?"; then
+  open -a Taccy $app_path
+fi
+if prompt "Open in ArchiChect?"; then
+  open -a ArchiChect $app_path
+fi

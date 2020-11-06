@@ -1,0 +1,22 @@
+#!/bin/zsh
+set -eu; base=${0:a:h}; source $base/common
+
+# get latest subdir of temp containing a info file
+info_file=($base/temp/*/info.json(.oc[1]))
+cd ${info_file:h}
+
+# read in params
+jsonload $info_file app_path app_zip bundle_id 
+echo; askuser "Ready to go. Send this for notarization?"
+
+# upload
+echo "uploading to Apple's notarization service..."
+json=$(altool --notarize-app --asc-provider NicholasMoore1324598518 --file $app_zip --primary-bundle-id $bundle_id)
+echo $json | jq
+
+# save uuid
+uuid=$(param $json notarization-upload RequestUUID)
+show info_file uuid
+jsonsave $info_file uuid
+echo 'uuid saved to file'
+
