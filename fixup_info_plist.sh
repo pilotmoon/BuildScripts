@@ -1,3 +1,4 @@
+#!/bin/bash 
 # set the CFBundleLocalizations key to our list of languages
 
 buddy='/usr/libexec/PlistBuddy'

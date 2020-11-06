@@ -1,3 +1,4 @@
+#!/bin/bash 
 # This script fixes up the CFBundleShortVersionString with a string derived from git.
 # Place it as a Build Phase just before Copy Bundle Resources
 

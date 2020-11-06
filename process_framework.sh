@@ -1,3 +1,4 @@
+#!/bin/bash 
 nm_framework_name=$1
 nm_framework_bin="$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/$nm_framework_name.framework/Versions/A/$nm_framework_name"
 

@@ -1,3 +1,4 @@
+#!/bin/bash 
 # For running in post-build step in scheme.
 # Zips app and creates an appcast entry.
 echo "In script"
