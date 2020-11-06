@@ -31,7 +31,13 @@ channel=$(info PilotmoonReleaseChannel)
 show version build bundle_id channel
 
 # construct naming slug for zip files
-slug=${PRODUCT_NAME:gs/ /}-${version:l:gs/ /-}; show slug
+slug_product_name=$PRODUCT_NAME
+slug_version=$version
+if [[ $edition == MAS ]]; then
+  slug_product_name="$slug_product_name MAS"
+  slug_version=$(info PilotmoonInternalVersionString)
+fi
+slug=${slug_product_name:gs/ /}-${slug_version:l:gs/ /-}; show slug
 
 # make dsyms zip
 dsyms_zip=${PWD}/${slug}-dSYM.zip
