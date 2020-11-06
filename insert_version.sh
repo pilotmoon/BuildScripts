@@ -32,7 +32,7 @@ jekyll_releases_dir="/Users/nick/source/pilotmoon.com/www/jekyll/_releases"
 key='CFBundleShortVersionString'
 num_key='CFBundleVersion'
 record_key='NMVersionDescription'
-channel_key="NMReleaseChannel"
+channel_key="PilotmoonReleaseChannel"
 
 branch=`$git symbolic-ref --short HEAD`
 if [[ "$branch" != "master" ]]; then
