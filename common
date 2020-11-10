@@ -1,5 +1,4 @@
 #!/bin/zsh
-base=${0:a:h}
 source $base/lib/display
 source $base/lib/memo
 source $base/lib/tempdir
