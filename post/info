@@ -1,6 +1,5 @@
 #!/bin/zsh
-set -eu; base=${0:a:h}/..; source $base/common
+set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
-# get latest subdir of temp containing a info file
-info_file=$(print $base/temp/*/info.json(.oc[1]))
-jq < $info_file
+# this shows the info
+load_info

@@ -1,8 +1,55 @@
 #!/bin/zsh
+
+# generate unique id for temp dir name
+function uuid {
+  uuidgen
+}
+
+# root folder for temp dirs
 function temp_root {
   print ${TMPDIR}/com.pilotmoon.build/
 }
 
+# generate a unique temp working dir path
 function unique_temp_dir {
-  print $(temp_root)/$(uuidgen)
+  print $(temp_root)/$(uuid)
+}
+
+# create a new temp dir and cd to it
+function cd_temp_dir {
+  mkdir -p $(unique_temp_dir)
+  cd $_
+  show PWD
+  save_info
+}
+
+function info_file_name {
+  print info.json
+}
+
+# pass in names of variables. these will be saved to the info.json root dictionary.
+function save_info {
+  local name=$(info_file_name)
+  if ! [[ -f $name ]]; then 
+    print "~ making new $name"
+    print "{}" > $name
+  fi
+  if [[ $# > 1 ]]; then
+    jsonsave $name $*
+    print "~ parameters ($*) saved to $name"
+  fi
+}
+
+function cd_info {
+  local name=$(info_file_name)
+  # get latest subdir of temp containing a info file
+  local info_file_path=$(print $base/temp/*/$name(.oc[1]))
+  cd ${info_file_path:h}
+  show PWD
+}
+
+function load_info {
+  local name=$(info_file_name)
+  jq < $name
+  jsonload $name $*
 }

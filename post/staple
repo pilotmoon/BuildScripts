@@ -1,12 +1,8 @@
 #!/bin/zsh
-set -eu; base=${0:a:h}/..; source $base/common
-
-# get latest subdir of temp containing a uuid file
-info_file=($base/temp/*/info.json(.oc[1]))
-cd ${info_file:h}
+set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
 # read in params
-jsonload $info_file uuid app_path app_zip
+load_info uuid app_path app_zip
 
 # check status
 echo "checking notarization status for uuid:" $uuid
@@ -24,5 +20,4 @@ xcrun stapler staple $app_path
 echo "zipping stapled app to:" ${app_zip}
 /usr/bin/ditto -c -k --keepParent $app_path $app_zip
 
-stapled='yes'; jsonsave $info_file app_zip stapled
-echo 'stapled flag added to file'
+stapled='true'; save_info app_zip stapled

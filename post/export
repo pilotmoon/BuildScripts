@@ -4,16 +4,12 @@ set -eu; base=${0:a:h}/..; source $base/common
 # save or load the environment variables
 memo_vars vars_archive
 
+# switch to our working dir
+cd_temp_dir
+
 # get edition
-edition=${${=TARGET_NAME}[2]:u}
-[[ $edition == 'SA' || $edition == 'MAS' ]] || { print "bad edition: " $edition; exit 1 }
-show edition
-
-# make a temp dir
-mkdir -p $base/temp/$(uuidgen); cd $_
-
-# make initial info file
-jsonify base edition > info.json
+edition=${${=TARGET_NAME}[2]:u}; show edition
+[[ $edition == 'SA' || $edition == 'MAS' ]] || { print "bad edition: " $edition; exit 1 } #checks
 
 # export app from xcode
 export_path=$(pwd)/export; show export_path
@@ -50,5 +46,4 @@ show app_path app_zip
 /usr/bin/ditto -c -k --keepParent $app_path $app_zip
 
 # save vars to json file
-jsonsave info.json slug app_path app_zip dsyms_zip version build channel bundle_id
-echo 'info saved to file'
+save_info edition slug app_path app_zip dsyms_zip version build channel bundle_id

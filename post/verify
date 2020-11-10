@@ -1,12 +1,8 @@
 #!/bin/zsh
-set -ee; base=${0:a:h}/..; source $base/common
-
-# get latest subdir of temp containing a info file
-info_file=($base/temp/*/info.json(.oc[1]))
-cd ${info_file:h}
+set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
 # load vars
-jsonload $info_file app_zip version build channel slug
+load_info app_zip version build channel slug
 
 # get zip file size
 size=$(stat -f%z $app_zip); show size
