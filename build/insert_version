@@ -1,5 +1,5 @@
 #!/bin/zsh
-set -eu; base=${0:a:h}; source $base/common; sayhi $0
+set -eu; base=${0:a:h}/..; source $base/common; sayhi $0
 
 # what was passed in
 show version_num version_string channel edition

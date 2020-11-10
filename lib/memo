@@ -1,0 +1,12 @@
+#!/bin/zsh
+function memo_vars { # 1:file name
+  if [[ -v PRODUCT_BUNDLE_IDENTIFIER ]]; then # sentinel var, it could be any build setting
+    temp=$(unique_temp_dir)
+    print "memo vars to:" $temp
+    mkdir -p $temp && export > $temp/$1
+  else
+    vars_file=$(print $(temp_root)/*/$1(.oc[1]))
+    print vars: $vars_file
+    source $vars_file   
+  fi
+}

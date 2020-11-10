@@ -1,0 +1,8 @@
+#!/bin/zsh
+function temp_root {
+  print ${TMPDIR}/com.pilotmoon.build/
+}
+
+function unique_temp_dir {
+  print $(temp_root)/$(uuidgen)
+}

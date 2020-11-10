@@ -1,5 +1,5 @@
 #!/bin/zsh
-set -eu; base=${0:a:h}; source $base/common
+set -eu; base=${0:a:h}/..; source $base/common
 
 # get latest subdir of temp containing a uuid file
 info_file=($base/temp/*/info.json(.oc[1]))

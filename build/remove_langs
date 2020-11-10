@@ -1,5 +1,5 @@
 #!/bin/zsh
-set -eu; base=${0:a:h}; source $base/common; sayhi $0
+set -eu; base=${0:a:h}/..; source $base/common; sayhi $0
 
 # args: foldername langs
 folder=$1; langs=($*[2,-1]); show folder langs

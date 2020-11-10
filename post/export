@@ -1,5 +1,5 @@
 #!/bin/zsh
-set -eu; base=${0:a:h}; source $base/common
+set -eu; base=${0:a:h}/..; source $base/common
 
 # save or load the environment variables
 memo_vars vars_archive
@@ -13,7 +13,7 @@ show edition
 mkdir -p $base/temp/$(uuidgen); cd $_
 
 # make initial info file
-jsonify base > info.json
+jsonify base edition > info.json
 
 # export app from xcode
 export_path=$(pwd)/export; show export_path
@@ -33,7 +33,7 @@ show version build bundle_id channel
 # construct naming slug for zip files
 slug_version=$version
 slug_label=''
-if [[ $edition == MAS ]]; then
+if [[ $edition == MAS && $channel == Production ]]; then
   slug_version=$(info PilotmoonInternalVersionString)
   slug_label='-MAS'
 fi
