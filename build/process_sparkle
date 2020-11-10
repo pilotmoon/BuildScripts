@@ -1,6 +1,7 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common; sayhi $0
 show allowed_languages
+show signing_identity
 
 function strip_i386 {
   if lipo $1 -verify_arch i386; then

@@ -17,7 +17,9 @@ internal_key="PilotmoonInternalVersionString"
 
 # the plist files and keys to replace
 plist="${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}"
+[[ -f $plist ]] || { print "Expected file at: $plist"; exit 1 }
 sym_plist="${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}.dSYM/Contents/Info.plist"
+[[ -f $sym_plist ]] || { print "Expected file at: $plist"; exit 1 }
 
 # set channel key
 echo "Setting $channel_key to $channel in $plist"
