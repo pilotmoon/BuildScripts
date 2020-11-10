@@ -2,7 +2,9 @@
 
 # generate unique id for temp dir name
 function uuid {
-  uuidgen
+  # for base32: brew install coreutils
+  hash=$(uuidgen | shasum -a 256 | base32)
+  print ${hash[1,6]} # 6 chars
 }
 
 # root folder for temp dirs
@@ -43,7 +45,7 @@ function save_info {
 function cd_info {
   local name=$(info_file_name)
   # get latest subdir of temp containing a info file
-  local info_file_path=$(print $base/temp/*/$name(.oc[1]))
+  local info_file_path=$(print $(temp_root)/*/$name(.oc[1]))
   cd ${info_file_path:h}
   show PWD
 }
