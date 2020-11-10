@@ -9,7 +9,7 @@ function uuid {
 
 # root folder for temp dirs
 function temp_root {
-  print ${TMPDIR}/com.pilotmoon.build/
+  print ${TMPDIR}/com.pilotmoon.build
 }
 
 # generate a unique temp working dir path
