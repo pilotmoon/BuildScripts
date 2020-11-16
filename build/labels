@@ -1,6 +1,6 @@
 #!/bin/zsh
 # this must be called within the git repo and with 'constants' sourced
-show version_num_offset
+show version_num_offset version_num_dev
 
 # get the branch name, dirty status, commit reference, debug flag and target suffix
 branch=$(git symbolic-ref --short HEAD)
@@ -14,9 +14,9 @@ show branch gitref dirty debug target_suffix
 edition=$(get_edition $target_suffix)
 
 # the build version number derived from buildbase tag
-version_num=$(git describe --long --match "buildbase" | cut -d'-' -f2)
-version_num=$(($version_num + $version_num_offset))
-show version_num
+build_num=$(git describe --long --match "buildbase" | cut -d'-' -f2)
+build_num=$(($build_num + $version_num_offset))
+show build_num
 
 # the version tag, if any; 'v' prefix required
 version_tag=$(git describe --exact-match --match "v*" || print '')
@@ -26,15 +26,18 @@ show version_tag
 if [[ $branch != "master" || $dirty || $debug ]]; then
 	channel=$channel_dev;
 	version_string="${gitref}"
+  version_num=$version_num_dev
   if [[ $dirty ]]; then version_string="${version_string}-dty"; fi
   if [[ $debug ]]; then version_string="${version_string}-dbg"; fi
 else
 	if [[ $version_tag ]]; then # this commit has its own version tag
 		channel=$channel_prod
 		version_string=${version_tag#v} # strip off v prefix			
+    version_num=$build_num
 	else
 		channel=$channel_beta	
 		version_string="Build $version_num"
+    version_num=$build_num
 	fi
 fi
 show channel version_string
