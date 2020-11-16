@@ -20,7 +20,7 @@ show sparkle_path sparkle_resources finish_app finish_app_resources finish_app_b
 
 # process finish_installation.app
 $base/build/remove_langs $finish_app_resources $allowed_languages # langs
-rm -rf $finish_app_resources/Sparkle.icns # icon
+rm -rf $finish_app_resources/AppIcon.icns # icon
 codesign --timestamp=none -o runtime -s $signing_identity -f $finish_app # sign
 codesign --timestamp=none -o runtime -s $signing_identity -f $finish_app_bin2 # sign
 
