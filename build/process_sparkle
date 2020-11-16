@@ -26,8 +26,11 @@ codesign --timestamp=none -o runtime -s $signing_identity -f $finish_app_bin2 # 
 
 # process Sparkle.framework itself
 $base/build/remove_langs $sparkle_resources $allowed_languages # langs
-rm -rfv $sparkle_a/Headers
-rm -fv $sparkle_path/Headers
+rm -rfv $sparkle_a/*Headers
+rm -fv $sparkle_path/*Headers
+rm -rfv $sparkle_a/Modules
+rm -fv $sparkle_path/Modules
+
 codesign --timestamp=none -o runtime -s $signing_identity -f $sparkle_a # sign
 
 saybye $0
