@@ -2,10 +2,7 @@
 set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
 # load vars
-load_info app_zip version build channel slug
-
-# get zip file size
-size=$(stat -f%z $app_zip); show size
+load_info app_zip
 
 # unzip and verify signing
 verify_dir=${PWD}/verify
@@ -22,6 +19,9 @@ echo; echo "* verifying with codesign"
 
 echo; echo "* verifying with spctl"
 /usr/sbin/spctl -avv $app_path
+
+verified=1
+save_info verified
 
 if prompt "Open in Taccy?"; then
   open -a Taccy $app_path

@@ -1,0 +1,36 @@
+#!/bin/zsh
+set -eu; base=${0:a:h}/..; source $base/common; cd_info
+
+# load vars
+load_info product app_zip version build channel edition slug min_system 
+
+# get zip file size
+size=$(stat -f%z $app_zip); show size
+save_info size
+
+# make jekyll template for appcast
+metafile=$(date +%F)-$slug.md; show metafile
+show PWD
+
+# build release file
+cat <<eos > $metafile
+layout: appcast
+date: $(date +'%F %H:00:00 %z')
+product: $product
+channel: $channel
+version: $build
+filename: ${app_zip:t}
+short_version_string: '$version'
+size: $size
+minimum_system_version: '$min_system'
+published: no
+---
+
+Your notes here.
+
+eos
+
+print
+print "*"
+cat $metafile
+print "*"
