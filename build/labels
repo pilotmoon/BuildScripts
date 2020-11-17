@@ -36,7 +36,7 @@ else
     version_num=$build_num
 	else
 		channel=$channel_beta	
-		version_string="Build $version_num"
+		version_string="Build $build_num"
     version_num=$build_num
 	fi
 fi
