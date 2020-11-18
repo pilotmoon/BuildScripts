@@ -14,6 +14,7 @@ show PWD
 
 # build release file
 cat <<eos > $metafile
+---
 layout: appcast
 date: $(date +'%F %H:00:00 %z')
 product: $product
@@ -37,7 +38,7 @@ print
 # preserve existing file
 meta_dest=$PILOTMOON_WWW_RELEASES_LOCATION/$metafile
 if [[ -f $meta_dest ]]; then
-  meta_backup=$meta_dest.$(uuid)
+  meta_backup=${meta_dest}.backup-$(uuid)
   print "* copying existing metafile to $meta_backup"
   mv $meta_dest $meta_backup
 fi
