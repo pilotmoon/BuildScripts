@@ -4,14 +4,6 @@ set -eu; base=${0:a:h}/..; source $base/common; cd_info
 # load vars
 load_info product app_zip version build channel edition slug min_system stapled verified 
 
-# copy zip to downloads location
-downloads=$PILOTMOON_WWW_DOWNLOADS_LOCATION
-if [[ $channel == $channel_beta ]]; then
-  downloads=downloads/beta
-fi
-print "* copying zip to $downloads"
-cp -f $app_zip $downloads
-
 # get zip file size
 size=$(stat -f%z $app_zip); show size
 save_info size
@@ -42,9 +34,22 @@ print
 cat $metafile
 print 
 
+# preserve existing file
+meta_dest=$PILOTMOON_WWW_RELEASES_LOCATION/$metafile
+if [[ -f $meta_dest ]]; then
+  meta_backup=$meta_dest.$(uuid)
+  print "* copying existing metafile to $meta_backup"
+  mv $meta_dest $meta_backup
+fi
 # copy to destination
-print "* copying metafile to $PILOTMOON_WWW_RELEASES_LOCATION"
-cp -i $metafile $PILOTMOON_WWW_RELEASES_LOCATION
+print "* copying metafile to $meta_dest"
+cp $metafile $meta_dest
 
-
+# copy zip to downloads location
+downloads=$PILOTMOON_WWW_DOWNLOADS_LOCATION
+if [[ $channel == $channel_beta ]]; then
+  downloads=$downloads/beta
+fi
+print "* placing zip in $downloads"
+cp -f $app_zip $downloads
 

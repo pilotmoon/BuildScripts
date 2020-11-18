@@ -2,7 +2,7 @@
 set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
 # read in params
-load_info uuid app_path app_zip
+load_info uuid app_path app_zip product build version
 
 # check status
 echo "checking notarization status for uuid:" $uuid

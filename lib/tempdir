@@ -2,10 +2,8 @@
 
 # generate unique id for temp dir name
 function uuid {
-  # for base32: brew install coreutils
-  # hash=$(uuidgen | shasum -a 256 | base32)
-  hash=$(uuidgen)
-  print ${hash[1,6]} # 6 chars
+  hash=$(uuidgen | shasum -a 256)
+  print ${hash[1,10]}
 }
 
 # root folder for temp dirs
@@ -53,6 +51,6 @@ function cd_info {
 
 function load_info {
   local name=$(info_file_name)
-  jq < $name
+  #jq < $name
   jsonload $name $*
 }

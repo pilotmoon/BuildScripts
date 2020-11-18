@@ -1,0 +1,32 @@
+#!/bin/zsh
+set -eu; base=${0:a:h}/..; source $base/common; cd_info
+
+print "* auto script started"
+
+# check not already done
+print; print "* notarizing"
+if load_info uuid; then
+  print "already sent for notarization"
+else
+  $base/post/notarize -n
+fi
+
+print; print "* stapling"
+if load_info stapled; then
+  print "already stapled"
+else
+  until $base/post/staple; do
+    print "sleeping" 30
+    sleep $_ 
+  done
+fi
+
+print; print "* verifying"
+if load_info verified; then
+  print "already verified"
+else
+  $base/post/verify -n
+fi
+
+print; print "* publishing"
+$base/post/publish

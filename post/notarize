@@ -1,15 +1,25 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
+while getopts 'n' c
+do
+  case $c in
+    n) interactive=no ;;
+  esac
+done
+
+# cd to our temp dir 
+cd_info
+load_info app_path app_zip bundle_id edition channel version build
+
 # is this is something we would like to publish to web
 if [[ $edition != $edition_sa || ( $channel != $channel_beta && $channel != $channel_prod ) ]]; then
   print "Not notarizing edition: $edition, channel $channel"; exit
 fi
 
-# cd to our temp dir 
-cd_info
-load_info app_path app_zip bundle_id 
-echo; askuser "Ready to go. Send this for notarization?"
+if [[ $interactive != no ]]; then
+  echo; askuser "Ready to go. Send this for notarization?"
+fi
 
 # upload
 echo "uploading to Apple's notarization service..."

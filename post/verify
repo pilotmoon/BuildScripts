@@ -1,6 +1,13 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
+while getopts 'n' c
+do
+  case $c in
+    n) interactive=no ;;
+  esac
+done
+
 # load vars
 load_info app_zip
 
@@ -23,9 +30,11 @@ echo; echo "* verifying with spctl"
 verified=1
 save_info verified
 
-if prompt "Open in Taccy?"; then
-  open -a Taccy $app_path
-fi
-if prompt "Open in ArchiChect?"; then
-  open -a ArchiChect $app_path
+if [[ $interactive != no ]]; then
+  if prompt "Open in Taccy?"; then
+    open -a Taccy $app_path
+  fi
+  if prompt "Open in ArchiChect?"; then
+    open -a ArchiChect $app_path
+  fi
 fi
