@@ -1,6 +1,7 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
+interactive=yes
 while getopts 'n' c
 do
   case $c in
@@ -30,7 +31,7 @@ echo; echo "* verifying with spctl"
 verified=1
 save_info verified
 
-if [[ $interactive != no ]]; then
+if [[ $interactive == yes ]]; then
   if prompt "Open in Taccy?"; then
     open -a Taccy $app_path
   fi

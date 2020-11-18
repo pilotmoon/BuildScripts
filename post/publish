@@ -1,8 +1,17 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
+force=no
+while getopts 'f' c
+do
+  case $c in
+    f) force=yes ;;
+  esac
+done
+
 # load vars
-load_info product app_zip version build channel edition slug min_system stapled verified 
+load_info product app_zip version build channel edition slug min_system verified 
+[[ $force == yes ]] || load_info stapled
 
 # get zip file size
 size=$(stat -f%z $app_zip); show size
@@ -11,6 +20,12 @@ save_info size
 # make jekyll template for appcast
 metafile=$(date +%F)-$slug.md; show metafile
 show PWD
+
+if [[ -f ./rnotes.md ]]; then
+  notes=$(<./rnotes.md)
+else
+  notes="Your notes here."
+fi
 
 # build release file
 cat <<eos > $metafile
@@ -27,7 +42,7 @@ minimum_system_version: '$min_system'
 published: no
 ---
 
-Your notes here.
+$notes
 
 eos
 
@@ -38,7 +53,7 @@ print
 # preserve existing file
 meta_dest=$PILOTMOON_WWW_RELEASES_LOCATION/$metafile
 if [[ -f $meta_dest ]]; then
-  meta_backup=${meta_dest}.backup-$(uuid)
+  meta_backup=$PILOTMOON_WWW_RELEASES_LOCATION/_${metafile}.backup-$(uuid)
   print "* copying existing metafile to $meta_backup"
   mv $meta_dest $meta_backup
 fi

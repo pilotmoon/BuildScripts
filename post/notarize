@@ -1,6 +1,7 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
+interactive=yes
 while getopts 'n' c
 do
   case $c in
@@ -17,7 +18,7 @@ if [[ $edition != $edition_sa || ( $channel != $channel_beta && $channel != $cha
   print "Not notarizing edition: $edition, channel $channel"; exit
 fi
 
-if [[ $interactive != no ]]; then
+if [[ $interactive == yes ]]; then
   echo; askuser "Ready to go. Send this for notarization?"
 fi
 
