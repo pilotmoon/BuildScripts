@@ -9,6 +9,7 @@ if load_info uuid; then
   print "already sent for notarization"
 else
   $base/post/notarize -n
+  display "Sent for notarization ⏱" "Auto publish"
 fi
 
 print; print "* stapling"
@@ -29,4 +30,11 @@ else
 fi
 
 print; print "* publishing"
-$base/post/publish
+if load_info published; then
+  print "already published"
+else
+  $base/post/publish
+  display "Finished 🎉" "Auto publish"
+fi
+
+

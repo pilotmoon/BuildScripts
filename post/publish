@@ -54,3 +54,5 @@ fi
 print "* placing zip in $downloads"
 cp -f $app_zip $downloads
 
+published=1; save_info published
+

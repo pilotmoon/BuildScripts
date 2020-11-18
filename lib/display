@@ -2,5 +2,5 @@
 function display {
   notification=${1:-'notification'}
   title=${2:-'Build Script'}
-  /usr/bin/osascript -e 'display notification "'$notification'" with title "'$title'" subtitle "shell code: '$?'"'
+  /usr/bin/osascript -e 'display notification "'$notification'" with title "'$title'"'
 }
