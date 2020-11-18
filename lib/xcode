@@ -4,5 +4,5 @@
 # get provider shortname with 
 #   xcrun altool --list-providers -u <username> -p "@keychain:AC_PASSWORD"
 function altool { # call altool with login params
-  xcrun altool --output-format json --username $MY_APPSTORECONNECT_USERNAME --password @keychain:AC_PASSWORD $*
+  xcrun altool --output-format json --username $PILOTMOON_APPSTORECONNECT_USERNAME --password @keychain:AC_PASSWORD $*
 }

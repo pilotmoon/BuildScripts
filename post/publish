@@ -2,7 +2,15 @@
 set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
 # load vars
-load_info product app_zip version build channel edition slug min_system 
+load_info product app_zip version build channel edition slug min_system stapled verified 
+
+# copy zip to downloads location
+downloads=$PILOTMOON_WWW_DOWNLOADS_LOCATION
+if [[ $channel == $channel_beta ]]; then
+  downloads=downloads/beta
+fi
+print "* copying zip to $downloads"
+cp -f $app_zip $downloads
 
 # get zip file size
 size=$(stat -f%z $app_zip); show size
@@ -31,6 +39,12 @@ Your notes here.
 eos
 
 print
-print "*"
 cat $metafile
-print "*"
+print 
+
+# copy to destination
+print "* copying metafile to $PILOTMOON_WWW_RELEASES_LOCATION"
+cp -i $metafile $PILOTMOON_WWW_RELEASES_LOCATION
+
+
+

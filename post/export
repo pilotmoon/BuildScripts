@@ -36,8 +36,8 @@ if [[ $edition == MAS && $channel == Production ]]; then
   slug_version=$(info PilotmoonInternalVersionString)
   slug_label='-MAS'
 fi
-product=${PRODUCT_NAME:gs/ /}; show product
-slug=${product}${slug_label}-${slug_version:l:gs/ /-}; show slug
+product=${PRODUCT_NAME}; show product
+slug=${product:gs/ /}${slug_label}-${slug_version:l:gs/ /-}; show slug
 
 # make dsyms zip
 dsyms_zip=${PWD}/${slug}-dSYM.zip; show dsyms_zip
@@ -51,6 +51,28 @@ app_zip=${PWD}/${slug}.zip; show app_zip
 print -n "* zipping app..."
 /usr/bin/ditto -c -k --keepParent $app_path $app_zip
 print "done"
+
+# save the zip to storage?
+if [[ $channel == $channel_prod || $channel == $channel_beta ]]; then
+    # copy app and dsyms
+  storage_path=$(storage_path)
+  print "* creating storage_path"
+  mkdir -p $storage_path
+
+  dsyms_dest=$storage_path/${dsyms_zip:t}
+  print "* saving dsyms to $zip_dest"
+  cp -f $dsyms_zip $dsyms_dest 
+  
+  if [[ $edition == $edition_mas ]]; then 
+    zip_dest=$storage_path/${app_zip:t}
+  else 
+    zip_dest=$storage_path/notstapled-${app_zip:t}
+  fi
+  print "* saving zip to $zip_dest"
+  cp -f $app_zip $zip_path  
+else 
+  print "* not saving to storage (channel: $channel)"
+fi
 
 # save vars to json file
 save_info edition slug app_path app_zip dsyms_zip version build channel bundle_id min_system product

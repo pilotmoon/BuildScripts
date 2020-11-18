@@ -20,4 +20,11 @@ xcrun stapler staple $app_path
 echo "zipping stapled app to:" ${app_zip}
 /usr/bin/ditto -c -k --keepParent $app_path $app_zip
 
-stapled='true'; save_info app_zip stapled
+# save the stapled zip to storage
+storage_path=$(storage_path)
+zip_dest=$storage_path/${app_zip:t}
+print "saving to $zip_dest"
+cp -f $app_zip $zip_dest
+
+stapled='1'
+save_info app_zip stapled
