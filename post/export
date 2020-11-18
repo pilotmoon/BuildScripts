@@ -69,7 +69,7 @@ if [[ $channel == $channel_prod || $channel == $channel_beta ]]; then
     zip_dest=$storage_path/notstapled-${app_zip:t}
   fi
   print "* saving zip to $zip_dest"
-  cp -f $app_zip $zip_path  
+  cp -f $app_zip $zip_dest  
 else 
   print "* not saving to storage (channel: $channel)"
 fi
