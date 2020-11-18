@@ -60,7 +60,7 @@ if [[ $channel == $channel_prod || $channel == $channel_beta ]]; then
   mkdir -p $storage_path
 
   dsyms_dest=$storage_path/${dsyms_zip:t}
-  print "* saving dsyms to $zip_dest"
+  print "* saving dsyms to $dsyms_dest"
   cp -f $dsyms_zip $dsyms_dest 
   
   if [[ $edition == $edition_mas ]]; then 
