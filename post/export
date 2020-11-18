@@ -32,7 +32,7 @@ show version build bundle_id channel edition min_system
 print '* constructing slug...'
 slug_version=$version
 slug_label=''
-if [[ $edition == MAS && $channel == Production ]]; then
+if [[ $edition == MAS ]]; then
   slug_version=$(info PilotmoonInternalVersionString)
   slug_label='-MAS'
 fi
