@@ -33,8 +33,10 @@ print '* constructing slug...'
 slug_version=$version
 slug_label=''
 if [[ $edition == MAS ]]; then
-  slug_version=$(info PilotmoonInternalVersionString)
   slug_label='-MAS'
+  if [[ $channel == Production ]]; then
+    slug_version=$(info PilotmoonInternalVersionString)
+  fi
 fi
 product=${PRODUCT_NAME}; show product
 slug=${product:gs/ /}${slug_label}-${slug_version:l:gs/ /-}; show slug
