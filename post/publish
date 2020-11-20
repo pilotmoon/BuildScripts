@@ -1,17 +1,16 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
-force=no
-while getopts 'f' c
-do
+allow_unstapled=no # f = allow unstapled builds?
+while getopts 'u' c; do
   case $c in
-    f) force=yes ;;
+    u) allow_unstapled=yes ;;
   esac
 done
 
 # load vars
 load_info product app_zip version build channel edition slug min_system verified 
-[[ $force == yes ]] || load_info stapled
+[[ $allow_unstapled == yes ]] || load_info stapled
 
 # get zip file size
 size=$(stat -f%z $app_zip); show size
@@ -27,8 +26,8 @@ else
   notes="Your notes here."
 fi
 
-# build release file
-cat <<eos > $metafile
+# build releases metadata file for Jekyll site 
+cat <<END > $metafile  
 ---
 layout: appcast
 date: $(date +'%F %H:00:00 %z')
@@ -44,11 +43,7 @@ published: no
 
 $notes
 
-eos
-
-print
-cat $metafile
-print 
+END
 
 # preserve existing file
 meta_dest=$PILOTMOON_WWW_RELEASES_LOCATION/$metafile
@@ -57,6 +52,7 @@ if [[ -f $meta_dest ]]; then
   print "* copying existing metafile to $meta_backup"
   mv $meta_dest $meta_backup
 fi
+
 # copy to destination
 print "* copying metafile to $meta_dest"
 cp $metafile $meta_dest

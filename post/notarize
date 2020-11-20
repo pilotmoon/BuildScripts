@@ -2,10 +2,9 @@
 set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
 interactive=yes
-while getopts 'n' c
-do
+while getopts 'q' c; do
   case $c in
-    n) interactive=no ;;
+    q) interactive=no ;;
   esac
 done
 

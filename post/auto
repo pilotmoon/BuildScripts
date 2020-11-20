@@ -8,7 +8,7 @@ print; print "* notarizing"
 if load_info uuid; then
   print "already sent for notarization"
 else
-  $base/post/notarize -n
+  $base/post/notarize -q
   display "Sent for notarization ⏱" "Auto publish"
 fi
 
@@ -26,7 +26,7 @@ print; print "* verifying"
 if load_info verified; then
   print "already verified"
 else
-  $base/post/verify -n
+  $base/post/verify -q
 fi
 
 print; print "* publishing"

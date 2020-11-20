@@ -54,3 +54,8 @@ function load_info {
   #jq < $name
   jsonload $name $*
 }
+
+function print_info {
+  local name=$(info_file_name)
+  jq < $name
+}

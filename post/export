@@ -76,16 +76,5 @@ else
   print "* not saving to storage (channel: $channel)"
 fi
 
-# copy notes
-if [[ $channel == $channel_prod ]]; then
-  notesfile=${SRCROOT}/notes.md
-elif [[ $channel == $channel_beta ]]; then
-  notesfile=${SRCROOT}/notes_beta.md  
-fi
-if [[ -f $notesfile ]]; then
-  print "* copying notes file $notesfile"
-  cp $notesfile ./rnotes.md
-fi
-
 # save vars to json file
 save_info edition slug app_path app_zip dsyms_zip version build channel bundle_id min_system product
