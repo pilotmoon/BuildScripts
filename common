@@ -1,6 +1,5 @@
 #!/bin/zsh
 base=${0:a:h}
-source ~/.pilotmoon # locally specific servers, folder locations etc.
 source $base/build/constants
 source $base/lib/display
 source $base/lib/memo

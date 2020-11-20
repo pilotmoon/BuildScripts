@@ -1,5 +1,6 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common
+source $base/post/post_common
 
 # save or load the environment variables
 memo_vars vars_archive

@@ -1,5 +1,6 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common; cd_info
+source $base/post/post_common
 
 # read in params
 load_info uuid app_path app_zip product build version

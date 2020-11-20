@@ -13,7 +13,3 @@ function get_edition {
     * ) print "Unknown";;  
   }
 }
-
-function storage_path {
-  echo "$PILOTMOON_APPBUILDS_LOCATION/$product/($build) $product $version"
-}
