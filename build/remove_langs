@@ -1,11 +1,12 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common; sayhi $0
+source $base/build/build_utils
 
 # args: foldername langs
 folder=$1; langs=($*[2,-1]); show folder langs
 
-for subfolder in $1/*.lproj; do
-	code=${${${subfolder%.lproj}//_/-}:t:l} # strip all parts bu language code, lowercase, hyphen separators
+for subfolder in $1/*.lproj(N); do
+	code=$(normalise_lproj subfolder)
   if string_in_array $code $langs; then
     print "keeping ${subfolder:t}"	
   else

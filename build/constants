@@ -4,12 +4,6 @@ export edition_sa="Standalone"
 export channel_dev="Development"
 export channel_beta="Beta"
 export channel_prod="Production"
+export version_num_dev=9999999
 
-# look up edition label from target suffix
-function get_edition {
-  case $1 {
-    SA ) print $edition_sa;;
-    MAS ) print $edition_mas;;
-    * ) print "Unknown";;  
-  }
-}
+

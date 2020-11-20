@@ -1,7 +1,7 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common; sayhi $0
-show allowed_languages
-show signing_identity
+
+show allowed_languages signing_identity
 
 # construct paths we will work with
 sparkle_path=$1
@@ -26,10 +26,10 @@ codesign --timestamp=none -o runtime -s $signing_identity -f $finish_app_bin2 # 
 
 # process Sparkle.framework itself
 $base/build/remove_langs $sparkle_resources $allowed_languages # langs
-rm -rfv $sparkle_a/*Headers
-rm -fv $sparkle_path/*Headers
-rm -rfv $sparkle_a/Modules
-rm -fv $sparkle_path/Modules
+rm -rfv $sparkle_a/*Headers || true
+rm -fv $sparkle_path/*Headers || true
+rm -rfv $sparkle_a/Modules || true
+rm -fv $sparkle_path/Modules || true
 
 codesign --timestamp=none -o runtime -s $signing_identity -f $sparkle_a # sign
 

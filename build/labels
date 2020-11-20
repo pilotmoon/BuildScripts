@@ -1,5 +1,6 @@
 #!/bin/zsh
 # this must be called within the git repo and with 'constants' sourced
+version_num_offset=${1:-0}
 show version_num_offset version_num_dev
 
 # get the branch name, dirty status, commit reference, debug flag and target suffix
@@ -7,11 +8,14 @@ branch=$(git symbolic-ref --short HEAD)
 gitref=g$(git rev-parse --short=7 HEAD)
 dirty=$(git diff --quiet || print 1)
 debug=$([[ $CONFIGURATION == Release ]] || print 1)
-target_suffix=${${=TARGET_NAME}[2]:u}
+target_suffix=${${=TARGET_NAME}[-1]:u}
 show branch gitref dirty debug target_suffix
 
-# pretty print edition
-edition=$(get_edition $target_suffix)
+# look up edition label from target suffix
+case $target_suffix {
+  MAS ) edition=$edition_mas ;;
+  SA|* ) edition=$edition_sa ;; # no suffix = standalone
+}
 
 # the build version number derived from buildbase tag
 build_num=$(git describe --long --match "buildbase" | cut -d'-' -f2)
