@@ -9,8 +9,12 @@ memo_vars vars_archive
 cd_temp_dir
 
 # select export options file based on target
-target_suffix=${${=TARGET_NAME}[2]:u}; show target_suffix # SA or MAS
-options_path=${base}/xcode/ExportOptions_$target_suffix.plist; show options_path
+case {${=TARGET_NAME}[-1]:u} {
+  MAS ) options_plist=ExportOptions_MAS.plist ;;
+  SA|* ) options_plist=ExportOptions_SA.plist ;;
+}
+
+options_path=${base}/xcode/$options_plist; show options_path
 [[ -f $options_path ]] || { print "bad options_path"; exit 1 }
 
 # export app from xcode

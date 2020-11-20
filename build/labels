@@ -8,11 +8,10 @@ branch=$(git symbolic-ref --short HEAD)
 gitref=g$(git rev-parse --short=7 HEAD)
 dirty=$(git diff --quiet || print 1)
 debug=$([[ $CONFIGURATION == Release ]] || print 1)
-target_suffix=${${=TARGET_NAME}[-1]:u}
-show branch gitref dirty debug target_suffix
+show branch gitref dirty debug
 
 # look up edition label from target suffix
-case $target_suffix {
+case {${=TARGET_NAME}[-1]:u} {
   MAS ) edition=$edition_mas ;;
   SA|* ) edition=$edition_sa ;; # no suffix = standalone
 }
