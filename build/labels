@@ -26,7 +26,7 @@ version_tag=$(git describe --exact-match --match "v*" || print '')
 show version_tag
 
 # Dev, Beta or Release?
-if [[ $branch != "master" || $dirty || $debug ]]; then
+if [[ $branch != "master" || $version_tag =~ -beta[.0-9]*$ || $dirty || $debug ]]; then
 	channel=$channel_dev;
 	version_string="${gitref}"
   version_num=$version_num_dev
