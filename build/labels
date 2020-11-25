@@ -25,6 +25,11 @@ show build_num
 version_tag=$(git describe --exact-match --match "v*" || print '')
 show version_tag
 
+# explicit beta tagged?
+if [[ $version_tag =~ -beta[.0-9]*$ ]]; then
+   betatag=1
+fi
+
 # Dev, Beta or Release?
 if [[ $branch != "master" || $dirty || $debug ]]; then
     channel=$channel_dev;
@@ -33,14 +38,16 @@ if [[ $branch != "master" || $dirty || $debug ]]; then
   if [[ $dirty ]]; then version_string="${version_string}-dty"; fi
   if [[ $debug ]]; then version_string="${version_string}-dbg"; fi
 else
-	if [[ $version_tag ]] && ! [[ $version_tag =~ -beta[.0-9]*$ ]]; then # this commit has its own version tag
+    version_string=${version_tag#v} # strip off v prefix
+	if [[ $version_tag ]] && ! [[ $betatag ]]; then # this commit has its own version tag
 		channel=$channel_prod
-		version_string=${version_tag#v} # strip off v prefix
-    version_num=$build_num
+        version_num=$build_num
 	else
 		channel=$channel_beta
-		version_string="Build $build_num"
-    version_num=$build_num
+        if ! [[ $betatag ]]; then
+            version_string="Build $build_num"
+        fi
+        version_num=$build_num
 	fi
 fi
 show channel version_string
