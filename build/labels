@@ -26,19 +26,19 @@ version_tag=$(git describe --exact-match --match "v*" || print '')
 show version_tag
 
 # Dev, Beta or Release?
-if [[ $branch != "master" || $version_tag =~ -beta[.0-9]*$ || $dirty || $debug ]]; then
-	channel=$channel_dev;
+if [[ $branch != "master" || $dirty || $debug ]]; then
+    channel=$channel_dev;
 	version_string="${gitref}"
   version_num=$version_num_dev
   if [[ $dirty ]]; then version_string="${version_string}-dty"; fi
   if [[ $debug ]]; then version_string="${version_string}-dbg"; fi
 else
-	if [[ $version_tag ]]; then # this commit has its own version tag
+	if [[ $version_tag ]] && ! [[ $version_tag =~ -beta[.0-9]*$ ]]; then # this commit has its own version tag
 		channel=$channel_prod
-		version_string=${version_tag#v} # strip off v prefix			
+		version_string=${version_tag#v} # strip off v prefix
     version_num=$build_num
 	else
-		channel=$channel_beta	
+		channel=$channel_beta
 		version_string="Build $build_num"
     version_num=$build_num
 	fi
@@ -51,4 +51,4 @@ if [[ $edition == $edition_mas && $channel == $channel_prod ]]; then
   version_string=$(echo $version_string | cut -d'-' -f1)
 fi
 
-export version_num version_string channel edition 
+export version_num version_string channel edition
