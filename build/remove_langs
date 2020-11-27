@@ -6,7 +6,7 @@ source $base/build/build_utils
 folder=$1; langs=($*[2,-1]); show folder langs
 
 for subfolder in $1/*.lproj(N); do
-	code=$(normalise_lproj subfolder)
+	code=$(normalise_lproj $subfolder)
   if string_in_array $code $langs; then
     print "keeping ${subfolder:t}"	
   else

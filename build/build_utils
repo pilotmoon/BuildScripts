@@ -5,7 +5,6 @@ function normalise_lproj { # remove .lproj suffix, lowercase, hyphen separators
 }
 
 function list_langs { # list the languages in a folder
-  [[ -d $1 ]] || print "expected directory: $1"
-  list=$({for lproj in $(\ls -G $1); do print -n $(normalise_lproj $lproj); done})
+  list=($(for lproj in $(\ls -G $1); do print $(normalise_lproj $lproj); done))
   print ${(j: :)list} # join with spaces
 }
