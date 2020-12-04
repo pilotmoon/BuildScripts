@@ -1,9 +1,8 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common; cd_info
-source $base/post/post_common
 
 # read in params
-load_info uuid app_path app_zip product build version
+load_info uuid app_path app_zip product build version storage_path
 
 # check status
 echo "checking notarization status for uuid:" $uuid
@@ -22,7 +21,6 @@ echo "zipping stapled app to:" ${app_zip}
 /usr/bin/ditto -c -k --keepParent $app_path $app_zip
 
 # save the stapled zip to storage
-storage_path=$(storage_path)
 zip_dest=$storage_path/${app_zip:t}
 print "saving to $zip_dest"
 cp -f $app_zip $zip_dest

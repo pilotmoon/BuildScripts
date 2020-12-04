@@ -1,6 +1,5 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common
-source $base/post/post_common
 
 # save or load the environment variables
 memo_vars vars_archive
@@ -62,7 +61,7 @@ print "done"
 # save the zip to storage?
 if [[ $channel == $channel_prod || $channel == $channel_beta ]]; then
     # copy app and dsyms
-  storage_path=$(storage_path)
+  storage_path="$PILOTMOON_APPBUILDS_LOCATION/$product/($build) $product $version"
   print "* creating storage_path: $storage_path"
   mkdir -p $storage_path
 
@@ -82,4 +81,4 @@ else
 fi
 
 # save vars to json file
-save_info edition slug app_path app_zip dsyms_zip version build channel bundle_id min_system product
+save_info edition slug app_path app_zip dsyms_zip version build channel bundle_id min_system product storage_path

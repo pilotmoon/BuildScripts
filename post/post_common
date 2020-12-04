@@ -1,5 +1,0 @@
-#!/bin/zsh
-# definitions common to postprocessing scripts
-function storage_path {
-  echo "$PILOTMOON_APPBUILDS_LOCATION/$product/($build) $product $version"
-}
