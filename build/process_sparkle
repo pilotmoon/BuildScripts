@@ -1,10 +1,11 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common; sayhi $0
-
-show allowed_languages signing_identity
+sparkle_path=${1}
+allowed_languages=${2}
+signing_identity=${3}
+show sparkle_path allowed_languages signing_identity
 
 # construct paths we will work with
-sparkle_path=$1
 sparkle_a=$sparkle_path/Versions/A
 sparkle_resources=$sparkle_a/Resources
 sparkle_bin=$sparkle_a/Sparkle

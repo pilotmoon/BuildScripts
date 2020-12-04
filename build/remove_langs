@@ -1,6 +1,5 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common; sayhi $0
-source $base/build/build_utils
 
 # args: foldername langs
 folder=$1; langs=(${=2}); show folder langs
