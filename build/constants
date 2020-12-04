@@ -4,6 +4,5 @@ export edition_sa="Standalone"
 export channel_dev="Development"
 export channel_beta="Beta"
 export channel_prod="Production"
-export version_num_dev=9999999
 
 

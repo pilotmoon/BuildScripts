@@ -1,5 +1,0 @@
-#!/bin/zsh
-function string_in_array { # str, arr
-  [[ ${2[(ie)$1]} -le ${#2} ]]
-}
-

@@ -1,6 +1,7 @@
 #!/bin/zsh
 # this must be called within the git repo and with 'constants' sourced
 version_num_offset=${1:-0}
+version_num_dev=${2:-0}
 show version_num_offset version_num_dev
 
 # get the branch name, dirty status, commit reference, debug flag and target suffix
