@@ -12,10 +12,11 @@ debug=$([[ $CONFIGURATION == Release ]] || print 1)
 show branch gitref dirty debug
 
 # look up edition label from target suffix
-case {${=TARGET_NAME}[-1]:u} {
+case ${${=TARGET_NAME}[-1]:u} {
   MAS ) edition=$edition_mas ;;
   SA|* ) edition=$edition_sa ;; # no suffix = standalone
 }
+show TARGET_NAME edition
 
 # the build version number derived from buildbase tag
 build_num=$(git describe --long --match "buildbase" | cut -d'-' -f2)
