@@ -1,0 +1,56 @@
+#!/bin/zsh
+# called for pre and post build actions in xcode scheme
+set -eu; base=${0:a:h}; source $base/common
+memo_vars vars_action
+pushd $PROJECT_DIR
+
+action=${1:-none}
+vercfg=${PROJECT_DIR}/Version.xcconfig
+
+# set up log file since there is no log output in xcode
+logdir=${PROJECT_DIR}/log; mkdir -p $logdir
+logfile=$logdir/$action.log
+rm $logfile || true
+touch $logfile
+exec > $logfile 2>&1
+sayhi $0
+
+# write vars to debug
+show action vercfg
+show BUILDSCRIPTS_VERSION_OFFSET BUILDSCRIPTS_VERSION_DEV
+
+# function writes standardised Version.xcconfig file
+function write_config() {
+cat <<END > $vercfg
+BUILDSCRIPTS_VERSION_NUM = ${1:-0}
+BUILDSCRIPTS_VERSION_STRING = ${2:-not_set}
+BUILDSCRIPTS_ORIGINAL_VERSION_STRING = ${3:-not_set}
+BUILDSCRIPTS_RELEASE_CHANNEL = ${4:-not_set}
+BUILDSCRIPTS_RELEASE_EDITION = ${5:-not_set}
+END
+cat $vercfg
+}
+
+# perform action
+case $action in
+prebuild|prearchive)
+source $base/pre/labels $BUILDSCRIPTS_VERSION_OFFSET $BUILDSCRIPTS_VERSION_DEV
+write_config $version_num $version_string $original_version_string $channel $edition
+
+# tag repo with build number if Beta or Production
+if [[ $channel == $channel_beta || $channel == $channel_prod ]]; then
+  git tag "b$version_num" || true
+fi
+;;
+
+postbuild|postarchive) write_config;;
+*) print "unknown action";;
+esac
+
+# extra actions
+if [[ $action == postarchive ]]; then
+$base/post/export # run export script
+fi
+
+popd
+saybye $0
