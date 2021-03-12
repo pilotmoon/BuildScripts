@@ -49,6 +49,7 @@ esac
 
 # extra actions
 if [[ $action == postarchive ]]; then
+display "Exporting archive" "Post-archive script"
 $base/post/export # run export script
 fi
 
