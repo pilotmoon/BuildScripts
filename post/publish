@@ -12,9 +12,13 @@ done
 load_info product app_zip version build channel edition slug min_system verified 
 [[ $allow_unstapled == yes ]] || load_info stapled
 
-# get zip file size
-size=$(stat -f%z $app_zip); show size
-save_info size
+# get zip file eddsa signature and size
+signature_response=$($PILOTMOON_SPARKLE_SIGN_UPDATE_TOOL $app_zip)
+[[ $signature_response =~ '^sparkle:edSignature=\"(.+)\" length=\"(.+)\"$' ]] || { print "signature output not in expected format: $signature_response"; exit 1 }
+signature=$match[1]
+size=$match[2]
+show size signature
+save_info size signature
 
 # make jekyll template for appcast
 metafile=$(date +%F)-$slug.md; show metafile
@@ -37,6 +41,7 @@ version: $build
 filename: ${app_zip:t}
 short_version_string: '$version'
 size: $size
+eddsa_signature: '$signature'
 minimum_system_version: '$min_system'
 published: no
 ---
