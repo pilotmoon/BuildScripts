@@ -5,7 +5,7 @@ version_num_dev=${2:-0}
 show version_num_offset version_num_dev
 
 # get the branch name, dirty status, commit reference, debug flag and target suffix
-branch=$(git symbolic-ref --short HEAD)
+branch=$(git symbolic-ref --short HEAD || print '')
 gitref=g$(git rev-parse --short=7 HEAD)
 dirty=$(git diff --quiet || print 1)
 debug=$([[ $CONFIGURATION == Release ]] || print 1)
