@@ -19,7 +19,7 @@ options_path=${base}/xcode/$options_plist; show options_path
 # export app from xcode
 export_path=$(pwd)/export; show export_path
 print '* exporting archive...'
-/usr/bin/xcodebuild -exportArchive -archivePath $ARCHIVE_PATH -exportOptionsPlist $options_path -exportPath $export_path
+/usr/bin/xcodebuild -exportArchive -archivePath $ARCHIVE_PATH -exportOptionsPlist $options_path -exportPath $export_path -allowProvisioningUpdates
 
 # get app info
 print '* examining exported info.plist...'

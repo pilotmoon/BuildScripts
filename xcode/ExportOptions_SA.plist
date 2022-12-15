@@ -12,5 +12,10 @@
 	<string>manual</string>
 	<key>teamID</key>
 	<string>6W6K75YWQ9</string>
+	<key>provisioningProfiles</key>
+	<dict>
+		<key>com.pilotmoon.popclip</key>
+		<string>PopClip 2022-11-30</string>
+	</dict>
 </dict>
 </plist>
