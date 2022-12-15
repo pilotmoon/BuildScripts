@@ -1,6 +1,12 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common
 
+# source variables
+if [[ ! -f $base/variables ]]; then
+    op inject -f -i $base/variables-template -o $base/variables
+fi
+source $base/variables
+
 # save or load the environment variables
 memo_vars vars_archive
 
