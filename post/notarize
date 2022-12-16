@@ -14,7 +14,7 @@ load_info app_path app_zip bundle_id edition channel version build
 
 # is this is something we would like to publish to web
 if [[ $edition != $edition_sa || ( $channel != $channel_beta && $channel != $channel_prod ) ]]; then
-  print "Not notarizing edition: $edition, channel $channel"; exit
+  print "Not notarizing edition: $edition, channel $channel"; exit 1
 fi
 
 if [[ $interactive == yes ]]; then
