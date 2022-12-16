@@ -1,3 +1,0 @@
-#!bin/zsh
-export PILOTMOON_APPBUILDS_LOCATION="op://dev/BuildSettings/AppBuildsLocation"
-export PILOTMOON_APPSTORECONNECT_USERNAME="op://dev/BuildSettings/AppStoreConnectUsername"
