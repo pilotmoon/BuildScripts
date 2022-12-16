@@ -12,13 +12,17 @@ done
 load_info product app_zip version build channel edition slug min_system verified 
 [[ $allow_unstapled == yes ]] || load_info stapled
 
+print "* generating sparkle signature"
+
 # get zip file eddsa signature and size
-signature_response=$($base/bin/sign_update $app_zip)
+signature_response=$($base/bin/sign_update $app_zip) || print 'sign_update error'
 [[ $signature_response =~ '^sparkle:edSignature=\"(.+)\" length=\"(.+)\"$' ]] || { print "signature output not in expected format: $signature_response"; exit 1 }
 signature=$match[1]
 size=$match[2]
 show size signature
 save_info size signature
+
+print "* generating jekyll template"
 
 # make jekyll template for appcast
 metafile=$(date +%F)-$slug.md; show metafile
