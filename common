@@ -8,3 +8,7 @@ source $base/lib/json
 source $base/lib/shell
 source $base/lib/xcode
 source $base/lib/utils
+if [[ ! -f $base/variables ]]; then
+    op inject -f -i $base/variables-template -o $base/variables
+fi
+source $base/variables
