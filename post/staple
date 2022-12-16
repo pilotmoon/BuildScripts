@@ -2,15 +2,7 @@
 set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
 # read in params
-load_info uuid app_path app_zip product build version storage_path
-
-# check status
-echo "checking notarization status for uuid:" $uuid
-json=$(altool --notarization-info $uuid)
-echo $json | jq
-
-# continue only when Apple has done the deed
-[[ $(param $json notarization-info Status) == success ]] || { echo "not cooked yet"; exit 1 }
+load_info app_path app_zip product build version storage_path
 
 # staple it
 echo "stapling ${app_path}"

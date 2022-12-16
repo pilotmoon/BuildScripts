@@ -23,10 +23,10 @@ fi
 
 # upload
 echo "uploading to Apple's notarization service..."
-json=$(altool --notarize-app --asc-provider NicholasMoore1324598518 --file $app_zip --primary-bundle-id $bundle_id)
-echo $json | jq
+xcrun notarytool submit $app_zip --keychain-profile AppStoreConnectProfile --wait
+# save profile as follows
+# xcrun notarytool store-credentials AppStoreConnectProfile
+# (man notarytool for info. note that the profile should already be in icloud keychain.)
 
-# save uuid
-uuid=$(param $json notarization-upload RequestUUID); show uuid
-save_info uuid
-
+notarized='1'
+save_info notarized
