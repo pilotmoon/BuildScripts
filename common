@@ -8,4 +8,3 @@ source $base/lib/json
 source $base/lib/shell
 source $base/lib/xcode
 source $base/lib/utils
-source $base/variables
