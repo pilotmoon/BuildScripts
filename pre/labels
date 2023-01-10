@@ -14,7 +14,7 @@ show branch gitref dirty debug
 # look up edition label from target suffix
 case ${${=TARGET_NAME}[-1]:u} {
   MAS ) edition=$edition_mas ;;
-  SE ) edition=$edition_setapp ;; 
+  SE ) edition=$edition_setapp ;;
   SA|* ) edition=$edition_sa ;; # no suffix = standalone
 }
 show TARGET_NAME edition
