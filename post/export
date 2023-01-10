@@ -59,7 +59,7 @@ print -n "* zipping app..."
 print "done"
 
 # storage path
-storage_path="$PILOTMOON_APPBUILDS_LOCATION/$product/($build) $product $version"
+storage_path="$PILOTMOON_APPBUILDS_LOCATION/$product/($build) $product $edition $version"
 
 # save the zip to storage?
 if [[ $channel == $channel_prod || $channel == $channel_beta ]]; then
