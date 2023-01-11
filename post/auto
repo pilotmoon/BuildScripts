@@ -26,6 +26,7 @@ else
   $base/post/verify -q
 fi
 
+if [[ $edition == $edition_sa ]]; then
 print; print "* publishing"
 if load_info published; then
   print "already published"
@@ -33,5 +34,7 @@ else
   $base/post/publish
   display "Finished 🎉" "Auto publish"
 fi
-
+else
+print; print "* not publishing because not standalone edition"
+fi
 
