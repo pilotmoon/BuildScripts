@@ -8,3 +8,4 @@ source $base/lib/json
 source $base/lib/shell
 source $base/lib/xcode
 source $base/lib/utils
+export PATH=/opt/homebrew/bin:$PATH
