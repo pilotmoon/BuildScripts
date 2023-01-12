@@ -36,12 +36,13 @@ show version build bundle_id channel edition min_system
 print '* constructing slug...'
 slug_version=$version
 slug_label=''
-if [[ $edition == MAS ]]; then
-  slug_label='-MAS'
-  if [[ $channel == Production ]]; then
-    slug_version=$(info PilotmoonInternalVersionString)
-  fi
+if [[ $edition != $edition_standalone ]]; then
+    slug_label="-${edition}"
 fi
+if [[ $edition == $edition_mas && $channel == $channel_production ]]; then
+    slug_version=$(info PilotmoonInternalVersionString)
+fi
+
 product=${PRODUCT_NAME}; show product
 slug=${product:gs/ /}${slug_label}-${slug_version:l:gs/ /-}; show slug
 
@@ -62,7 +63,7 @@ print "done"
 storage_path="$PILOTMOON_APPBUILDS_LOCATION/$product/($build) $product $edition $version"
 
 # save the zip to storage?
-if [[ $channel == $channel_prod || $channel == $channel_beta ]]; then
+if [[ $channel == $channel_production || $channel == $channel_beta ]]; then
     # copy app and dsyms
   print "* creating storage_path: $storage_path"
   mkdir -p $storage_path

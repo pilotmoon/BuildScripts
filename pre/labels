@@ -15,7 +15,7 @@ show branch gitref dirty debug
 case ${${=TARGET_NAME}[-1]:u} {
   MAS ) edition=$edition_mas ;;
   SE ) edition=$edition_setapp ;;
-  SA|* ) edition=$edition_sa ;; # no suffix = standalone
+  SA|* ) edition=$edition_standalone ;; # no suffix = standalone
 }
 show TARGET_NAME edition
 
@@ -42,7 +42,7 @@ if [[ $branch != "master" || $dirty || $debug ]]; then
 else
     version_string=${version_tag#v} # strip off v prefix
 	if [[ $version_tag ]] && ! [[ $betatag ]]; then # this commit has its own version tag
-		channel=$channel_prod
+		channel=$channel_production
         version_num=$build_num
 	else
 		channel=$channel_beta
@@ -56,7 +56,7 @@ show channel version_string
 
 # adjust for MAS by removing the first hyphen and all that follows
 original_version_string=$version_string
-if [[ $edition == $edition_mas && $channel == $channel_prod ]]; then
+if [[ $edition == $edition_mas && $channel == $channel_production ]]; then
     version_string=$(echo $version_string | cut -d'-' -f1)
 fi
 

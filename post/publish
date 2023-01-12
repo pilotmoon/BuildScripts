@@ -13,7 +13,7 @@ load_info product app_zip version build channel edition slug min_system verified
 [[ $allow_unstapled == yes ]] || load_info stapled
 
 # check standalone
-[[ $edition == $edition_sa ]] || print "not publishing because not standalone edition"; exit 1
+[[ $edition == $edition_standalone ]] || print "not publishing because not standalone edition"; exit 1
 
 print "* generating sparkle signature"
 

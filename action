@@ -38,7 +38,7 @@ source $base/pre/labels $BUILDSCRIPTS_VERSION_OFFSET $BUILDSCRIPTS_VERSION_DEV
 write_config $version_num $version_string $original_version_string $channel $edition
 
 # tag repo with build number if Beta or Production
-if [[ $channel == $channel_beta || $channel == $channel_prod ]]; then
+if [[ $channel == $channel_beta || $channel == $channel_production ]]; then
   git tag "b$version_num" || true
 fi
 ;;
