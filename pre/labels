@@ -56,7 +56,7 @@ show channel version_string
 
 # adjust for MAS by removing the first hyphen and all that follows
 original_version_string=$version_string
-if [[ $edition == $edition_mas && $channel == $channel_production ]]; then
+if [[ $edition != $edition_standalone && $channel == $channel_production ]]; then
     version_string=$(echo $version_string | cut -d'-' -f1)
 fi
 
