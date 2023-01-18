@@ -13,7 +13,7 @@ load_info app_zip
 
 # unzip and verify signing
 verify_dir=${PWD}/verify
-mkdir -p $verify_dir; rm -rf *.app(N)
+mkdir -p $verify_dir; rm -rf $verify_dir/*.app(N)
 echo "unzipping to $verify_dir"
 /usr/bin/ditto -xk $app_zip $verify_dir
 
@@ -25,7 +25,7 @@ echo; echo "* verifying with codesign"
 /usr/bin/codesign -dvv $app_path
 
 echo; echo "* verifying with spctl"
-/usr/sbin/spctl -avv $app_path
+/usr/sbin/spctl -avv $app_path || (print "VERIFY FAILED"; exit 1)
 
 echo; echo "* verifying with lipo"
 /usr/bin/lipo $binary_path -detailed_info

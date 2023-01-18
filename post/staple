@@ -12,15 +12,14 @@ echo "stapling ${app_path}"
 xcrun stapler staple $app_path
 
 # re-zip
-appicon=$PROJECT_DIR/AppIcon.png # png app icon for setapp
-if [[ $edition == $edition_setapp && -f $appicon ]]; then
-echo "zipping stapled app with AppIcon to:" ${app_zip}
-tmpzip='setappzip'; mkdir -p $tmpzip
-cp -r $app_path $appicon $tmpzip
-/usr/bin/ditto -c -k $tmpzip $app_zip
-else
 echo "zipping stapled app to:" ${app_zip}
 /usr/bin/ditto -c -k --keepParent $app_path $app_zip
+
+# add png app icon into archive for setapp
+appicon=$PROJECT_DIR/AppIcon.png
+if [[ $edition == $edition_setapp && -f $appicon ]]; then
+echo "zipping stapled app with AppIcon to:" ${app_zip}
+/usr/bin/zip -j $app_zip $appicon
 fi
 
 # save the stapled zip to storage
