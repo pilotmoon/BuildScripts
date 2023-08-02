@@ -9,7 +9,7 @@ while getopts 'u' c; do
 done
 
 # load vars
-load_info product app_zip version build channel edition slug min_system verified 
+load_info product app_zip version build channel edition slug min_system archs verified
 [[ $allow_unstapled == yes ]] || load_info stapled
 
 # check standalone
@@ -50,6 +50,7 @@ short_version_string: '$version'
 size: $size
 eddsa_signature: '$signature'
 minimum_system_version: '$min_system'
+archs: [ $archs ]
 published: no
 ---
 
