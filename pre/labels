@@ -52,11 +52,7 @@ else
 	else
 		channel=$channel_beta
         if ! [[ $betatag ]]; then
-            if [[ $edition == $edition_setapp ]]; then
-                version_string="$last_tag.0.$build_num"
-            else
-                version_string="Build $build_num"
-            fi
+            version_string="${last_tag#v}.0.$build_num"
         fi
         version_num=$build_num
 	fi
