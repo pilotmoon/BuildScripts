@@ -28,6 +28,11 @@ show build_num
 version_tag=$(git describe --exact-match --match "v*" || print '')
 show version_tag
 
+# last tag before this
+last_tag=$(git describe --match "v*")
+last_tag=${last_tag%%-*}
+show last_tag
+
 # explicit beta tagged?
 betatag=$(! [[ $version_tag =~ -beta[.0-9]*$ ]] || print 1)
 show betatag
@@ -47,7 +52,11 @@ else
 	else
 		channel=$channel_beta
         if ! [[ $betatag ]]; then
-            version_string="Build $build_num"
+            if [[ $edition == $edition_setapp ]]; then
+                version_string="$last_tag.0.$build_num"
+            else
+                version_string="Build $build_num"
+            fi
         fi
         version_num=$build_num
 	fi
