@@ -55,7 +55,7 @@ else
             if [[ $edition == $edition_standalone ]]; then
                 version_string="Build $build_num"
             elif [[ $edition == $edition_mas ]]; then
-                version_string="${last_tag#v}"
+                version_string=$(date +'%Y.%-m') # just use current month and year
             else
                 version_string="${last_tag#v}.0.$build_num"
             fi
