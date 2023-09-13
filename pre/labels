@@ -54,6 +54,8 @@ else
         if ! [[ $betatag ]]; then
             if [[ $edition == $edition_standalone ]]; then
                 version_string="Build $build_num"
+            elif [[ $edition == $edition_mas ]]; then
+                version_string="${last_tag#v}"
             else
                 version_string="${last_tag#v}.0.$build_num"
             fi
