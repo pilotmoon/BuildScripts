@@ -10,6 +10,7 @@ cd_temp_dir
 # select export options file based on target
 case ${${=TARGET_NAME}[-1]:u} {
   MAS ) options_plist=ExportOptions_MAS.plist ;;
+  SE ) options_plist=ExportOptions_SE.plist ;;
   SA|* ) options_plist=ExportOptions_SA.plist ;;
 }
 
