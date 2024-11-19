@@ -9,7 +9,7 @@ while getopts 'u' c; do
 done
 
 # load vars
-load_info product app_zip version build channel edition slug min_system archs verified
+load_info product app_zip version build channel edition slug min_system archs verified build_date effective_date
 [[ $allow_unstapled == yes ]] || load_info stapled
 
 # check standalone
@@ -31,6 +31,7 @@ print "* generating jekyll template"
 metafile=$(date +%F)-$slug.md; show metafile
 show PWD
 
+# notes template
 if [[ -f ./rnotes.md ]]; then
   notes=$(<./rnotes.md)
 else
@@ -41,7 +42,8 @@ fi
 cat <<END > $metafile  
 ---
 layout: appcast
-date: $(date +'%F %H:00:00 %z')
+date: $build_date
+effective_date: $effective_date
 product: $product
 channel: $channel
 version: $build
