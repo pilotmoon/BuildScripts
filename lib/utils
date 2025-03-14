@@ -13,6 +13,7 @@ function list_langs {
 
 # date formats
 ISO_DATE_FORMAT="%Y-%m-%dT%H:%M:%SZ"
+ISO_ZERO_HOURS_DATE_FORMAT="%Y-%m-%dT00:00:00Z"
 PLISTBUDDY_DATE_FORMAT="%a %b %d %H:%M:%S GMT %Y"
 RELEASES_DATE_FORMAT="%Y-%m-%d %H:%M:%S %z"
 
@@ -34,6 +35,11 @@ plist_to_releases_date() {
 # Give current date in ISO 8601 format
 current_iso_date() {
     date -u +"$ISO_DATE_FORMAT"
+}
+
+# Current ISO Date with time 00:00:00
+current_iso_date_start_of_day() {
+    date -u +"$ISO_ZERO_HOURS_DATE_FORMAT"
 }
 
 # Function to set or update a Config.plist constant
