@@ -33,7 +33,7 @@ channel=$(info PilotmoonReleaseChannel)
 edition=$(info PilotmoonReleaseEdition)
 min_system=$(info LSMinimumSystemVersion)
 build_date=$(plist_to_releases_date "$(config AppBuildDate)")
-effective_date=$(plist_to_releases_date "$(config AppEffectiveDate)")
+effective_date=$(plist_to_releases_date "$(config LicenseEffectiveDate)")
 show version build bundle_id channel edition min_system build_date effective_date
 
 # get architectures
