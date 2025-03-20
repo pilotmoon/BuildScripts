@@ -25,15 +25,15 @@ print '* exporting archive...'
 # get app info
 print '* examining exported info.plist...'
 info() { /usr/libexec/PlistBuddy -c "Print :$1" $export_path/$INFOPLIST_PATH }
-config() { /usr/libexec/PlistBuddy -c "Print :Constants:$1" $export_path/$UNLOCALIZED_RESOURCES_FOLDER_PATH/Config.plist }
+meta() { /usr/libexec/PlistBuddy -c "Print :$1" $export_path/$UNLOCALIZED_RESOURCES_FOLDER_PATH/Meta.plist }
 version=$(info CFBundleShortVersionString)
 build=$(info CFBundleVersion)
 bundle_id=$(info CFBundleIdentifier)
 channel=$(info PilotmoonReleaseChannel)
 edition=$(info PilotmoonReleaseEdition)
 min_system=$(info LSMinimumSystemVersion)
-build_date=$(plist_to_releases_date "$(config AppBuildDate)")
-effective_date=$(plist_to_releases_date "$(config LicenseEffectiveDate)")
+build_date=$(plist_to_releases_date "$(meta AppBuildDate)")
+effective_date=$(plist_to_releases_date "$(meta AppEffectiveDate)")
 show version build bundle_id channel edition min_system build_date effective_date
 
 # get architectures
