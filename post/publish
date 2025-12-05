@@ -83,7 +83,7 @@ fi
 print "* uploading zip to server for download at <https://pilotmoon.com/downloads/$dl_name>"
 curl \
   -H "Authorization: Bearer $PILOTMOON_FILES_API_KEY" \
-  -F "file=@$app_zip" \
+  --upload-file "$app_zip" \
   "$PILOTMOON_FILES_API_URL?name=$dl_name"
 
 published=1; save_info published
