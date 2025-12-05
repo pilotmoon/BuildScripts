@@ -81,9 +81,13 @@ fi
 
 # upload file to api server
 print "* uploading zip to server for download at <https://pilotmoon.com/downloads/$dl_name>"
-curl \
-  -H "Authorization: Bearer $PILOTMOON_FILES_API_KEY" \
-  --data-binary "@$app_zip" \
-  "$PILOTMOON_FILES_API_URL?name=$dl_name"
+# curl \
+#   -H "Authorization: Bearer $PILOTMOON_FILES_API_KEY" \
+#   --data-binary "@$app_zip" \
+#   "$PILOTMOON_FILES_API_URL?name=$dl_name"
+http POST "$PILOTMOON_FILES_API_URL" \
+  name=="$dl_name" \
+  Authorization:"Bearer $PILOTMOON_FILES_API_KEY" \
+  < "$app_zip"
 
 published=1; save_info published

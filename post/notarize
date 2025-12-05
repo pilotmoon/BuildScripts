@@ -8,7 +8,7 @@ while getopts 'q' c; do
   esac
 done
 
-# cd to our temp dir 
+# cd to our temp dir
 cd_info
 load_info app_path app_zip bundle_id edition channel version build
 
@@ -22,7 +22,7 @@ if [[ $interactive == yes ]]; then
 fi
 
 # upload
-echo "uploading to Apple's notarization service..."
+echo "* uploading to Apple's notarization service..."
 xcrun notarytool submit $app_zip --keychain-profile AppStoreConnectProfile --wait
 # save profile as follows
 # xcrun notarytool store-credentials AppStoreConnectProfile
