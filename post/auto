@@ -6,10 +6,10 @@ print "* auto script started"
 # check not already done
 print; print "* notarizing"
 if load_info notarized; then
-  print "already sent for notarization"
+  print "already notarized"
 else
   $base/post/notarize -q
-  display "Sent for notarization ⏱" "Auto publish"
+  display "Notarized" "Auto publish"
 fi
 
 print; print "* stapling"
@@ -33,4 +33,3 @@ else
   $base/post/publish
   display "Finished 🎉" "Auto publish"
 fi
-
