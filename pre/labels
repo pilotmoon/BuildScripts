@@ -20,16 +20,21 @@ case ${${=TARGET_NAME}[-1]:u} {
 show TARGET_NAME edition
 
 # the build version number derived from buildbase tag
-build_num=$(git describe --long --match "buildbase" | cut -d'-' -f2)
+build_desc=$(git describe --long --match "buildbase" 2>/dev/null || print '')
+if [[ $build_desc ]]; then
+    build_num=$(echo $build_desc | cut -d'-' -f2)
+else
+    build_num=${BUILDSCRIPTS_VERSION_BASE:-0}
+fi
 build_num=$(($build_num + $version_num_offset))
 show build_num
 
 # the version tag, if any; 'v' prefix required
-version_tag=$(git describe --exact-match --match "v*" || print '')
+version_tag=$(git describe --exact-match --match "v*" 2>/dev/null || print '')
 show version_tag
 
 # last tag before this
-last_tag=$(git describe --match "v*")
+last_tag=$(git describe --match "v*" 2>/dev/null || print '')
 last_tag=${last_tag%%-*}
 show last_tag
 
