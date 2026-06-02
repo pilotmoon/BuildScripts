@@ -1,11 +1,8 @@
 #!/bin/zsh
 set -eu; base=${0:a:h}/..; source $base/common; cd_info
 
-# load the vars
-memo_vars vars_archive
-
 # read in params
-load_info app_path app_zip product build version edition storage_path
+load_info app_path app_zip product build version edition storage_path project_dir
 
 # staple it
 echo "stapling ${app_path}"
@@ -16,7 +13,7 @@ echo "zipping stapled app to:" ${app_zip}
 /usr/bin/ditto -c -k --keepParent $app_path $app_zip
 
 # add png app icon into archive for setapp
-appicon=$PROJECT_DIR/AppIcon.png
+appicon=$project_dir/AppIcon.png
 if [[ $edition == $edition_setapp && -f $appicon ]]; then
 echo "zipping stapled app with AppIcon to:" ${app_zip}
 /usr/bin/zip -j $app_zip $appicon

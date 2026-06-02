@@ -103,4 +103,5 @@ else
 fi
 
 # save vars to json file
-save_info edition slug app_path app_zip dsyms_zip version build channel bundle_id min_system archs product storage_path build_date effective_date options_path release_notes_path
+project_dir=$PROJECT_DIR
+save_info edition slug app_path app_zip dsyms_zip version build channel bundle_id min_system archs product storage_path build_date effective_date options_path release_notes_path project_dir

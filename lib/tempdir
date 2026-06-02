@@ -11,6 +11,12 @@ function temp_root {
   print /tmp/com.pilotmoon.build
 }
 
+function ensure_temp_root {
+  local root=$(temp_root)
+  mkdir -p -m 700 $root
+  chmod 700 $root
+}
+
 # generate a unique temp working dir path
 function unique_temp_dir {
   print $(temp_root)/$(uuid)
@@ -18,8 +24,10 @@ function unique_temp_dir {
 
 # create a new temp dir and cd to it
 function cd_temp_dir {
-  mkdir -p $(unique_temp_dir)
-  cd $_
+  local temp=$(unique_temp_dir)
+  ensure_temp_root
+  mkdir -p -m 700 $temp
+  cd $temp
   show PWD
   save_info
 }
