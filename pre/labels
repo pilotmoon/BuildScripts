@@ -9,7 +9,10 @@ branch=$(git symbolic-ref --short HEAD || print '')
 gitref=g$(git rev-parse --short=7 HEAD)
 dirty=$(git diff --quiet || print 1)
 debug=$([[ $CONFIGURATION == Release ]] || print 1)
-show branch gitref dirty debug
+# sanitized branch label for use in version strings (slashes -> dashes, drop other oddities)
+branch_label=${branch//\//-}
+branch_label=${branch_label//[^A-Za-z0-9._-]/}
+show branch branch_label gitref dirty debug
 
 # look up edition label from target suffix
 case ${${=TARGET_NAME}[-1]:u} {
@@ -47,6 +50,7 @@ if [[ ( $branch != "master" && $branch != "main" ) || $dirty || $debug ]]; then
     channel=$channel_dev;
 	version_string="${gitref}"
   version_num=$version_num_dev
+  if [[ -n $branch_label ]]; then version_string="${branch_label}-${version_string}"; fi
   if [[ $dirty ]]; then version_string="${version_string}-dty"; fi
   if [[ $debug ]]; then version_string="${version_string}-dbg"; fi
 else

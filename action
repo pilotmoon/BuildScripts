@@ -39,7 +39,7 @@ rm -f "$metadata_config_path"
 
 function cleanup_metadata_config_on_exit() {
 case $action in
-postbuild|postarchive) remove_metadata_config ;;
+postbuild|postarchive|postarchive_noexport) remove_metadata_config ;;
 esac
 }
 trap cleanup_metadata_config_on_exit EXIT
@@ -56,7 +56,8 @@ if [[ $channel == $channel_beta || $channel == $channel_production ]]; then
 fi
 ;;
 
-postbuild)
+postbuild|postarchive_noexport)
+# nothing to do; metadata config is cleaned up by the exit trap
 ;;
 postarchive)
 display "Exporting archive" "Post-archive script"
