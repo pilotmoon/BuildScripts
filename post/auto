@@ -26,6 +26,13 @@ else
   $base/post/verify -q
 fi
 
+print; print "* uploading symbol maps"
+if load_info symbols_uploaded; then
+  print "symbols already uploaded"
+else
+  $base/post/symbols
+fi
+
 print; print "* publishing"
 if load_info published; then
   print "already published"

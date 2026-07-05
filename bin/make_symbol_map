@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+# Generates a symbol map JSON from a dSYM DWARF binary, for one architecture
+# slice. The map is uploaded to the backend (files endpoint) and used to
+# symbolicate MetricKit crash report frames, whose
+# offsetIntoBinaryTextSegment values are offsets from the __TEXT segment.
+#
+# Usage: make_symbol_map <dwarf_path> <arch> <uuid> [binary_name]
+# Outputs JSON to stdout:
+#   { "uuid": ..., "arch": ..., "binaryName": ...,
+#     "symbols": [[offset, "name"], ...] }  # sorted ascending by offset
+
+import json
+import subprocess
+import sys
+
+
+def run(args, input_text=None):
+    result = subprocess.run(
+        args, input=input_text, capture_output=True, text=True, check=True
+    )
+    return result.stdout
+
+
+def text_segment_vmaddr(dwarf_path, arch):
+    # find the vmaddr of the __TEXT segment (not __PAGEZERO)
+    out = run(["otool", "-arch", arch, "-l", dwarf_path])
+    current_segname = None
+    for line in out.splitlines():
+        parts = line.split()
+        if len(parts) == 2 and parts[0] == "segname":
+            current_segname = parts[1]
+        elif len(parts) == 2 and parts[0] == "vmaddr":
+            if current_segname == "__TEXT":
+                return int(parts[1], 16)
+    raise RuntimeError("no __TEXT segment found")
+
+
+def text_symbols(dwarf_path, arch, vmaddr):
+    # extract defined text-section symbols, sorted by address
+    out = run(["nm", "-arch", arch, "-n", "--defined-only", dwarf_path])
+    symbols = []
+    for line in out.splitlines():
+        parts = line.split(" ", 2)
+        if len(parts) != 3 or parts[1] not in ("T", "t"):
+            continue
+        offset = int(parts[0], 16) - vmaddr
+        if offset < 0:
+            continue
+        name = parts[2]
+        # nm shows C-mangled names with a leading underscore; strip it,
+        # matching what atos displays. Swift ($s...) and C++ (_Z...) mangled
+        # names are then demangleable as-is.
+        if name.startswith("_"):
+            name = name[1:]
+        symbols.append((offset, name))
+    return symbols
+
+
+def demangle(names):
+    # batch-demangle through swift-demangle then c++filt; both pass
+    # non-mangled names through unchanged
+    joined = "\n".join(names) + "\n"
+    joined = run(["xcrun", "swift-demangle", "-compact"], joined)
+    joined = run(["c++filt"], joined)
+    demangled = joined.splitlines()
+    if len(demangled) != len(names):
+        raise RuntimeError("demangler changed line count")
+    return demangled
+
+
+def main():
+    if len(sys.argv) < 4:
+        print(__doc__, file=sys.stderr)
+        sys.exit(2)
+    dwarf_path, arch, uuid = sys.argv[1:4]
+    binary_name = sys.argv[4] if len(sys.argv) > 4 else dwarf_path.split("/")[-1]
+
+    vmaddr = text_segment_vmaddr(dwarf_path, arch)
+    symbols = text_symbols(dwarf_path, arch, vmaddr)
+    names = demangle([name for _, name in symbols])
+
+    # dedupe: keep the first name at each offset
+    deduped = []
+    last_offset = None
+    for (offset, _), name in zip(symbols, names):
+        if offset == last_offset:
+            continue
+        deduped.append([offset, name])
+        last_offset = offset
+
+    json.dump(
+        {
+            "uuid": uuid.upper(),
+            "arch": arch,
+            "binaryName": binary_name,
+            "symbols": deduped,
+        },
+        sys.stdout,
+        separators=(",", ":"),
+    )
+    print()
+
+
+if __name__ == "__main__":
+    main()

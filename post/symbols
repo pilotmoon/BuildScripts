@@ -1,0 +1,43 @@
+#!/bin/zsh
+set -eu; base=${0:a:h}/..; source $base/common; cd_info
+
+# generate symbol maps from the archive dSYMs and upload them to the files
+# api, for server-side symbolication of crash reports. one map per binary
+# slice, named symbolMaps/<UUID>.json. re-uploads of an existing name are
+# rejected by the server (409), which we treat as already done.
+
+# load the archive vars saved at archive time
+memo_vars vars_archive
+show ARCHIVE_DSYMS_PATH
+
+for dwarf in $ARCHIVE_DSYMS_PATH/*.dSYM/Contents/Resources/DWARF/*(N); do
+  binary_name=${dwarf:t}
+  print "* processing dSYM slices for $binary_name"
+  dwarfdump --uuid $dwarf | while read -r _ uuid archpart _; do
+    arch=${${archpart#\(}%\)}
+    map_name=symbolMaps/$uuid.json
+    map_file=map-$uuid.json
+    print "* generating $map_name ($arch)"
+    $base/bin/make_symbol_map $dwarf $arch $uuid $binary_name > $map_file
+    [[ -s $map_file ]] || { print "generated map is empty"; exit 1 }
+    print "* uploading $map_name ($(du -h $map_file | cut -f1 | tr -d ' '))"
+    # note: no --ignore-stdin here; the request body is read from stdin
+    set +e
+    response=$(http --check-status POST "$PILOTMOON_FILES_API_URL" \
+      name=="$map_name" \
+      Authorization:"Bearer $PILOTMOON_FILES_API_KEY" \
+      < $map_file 2>&1)
+    upload_status=$?
+    set -e
+    if [[ $upload_status -eq 0 ]]; then
+      print "uploaded"
+    elif [[ $response == *"409"* || $response == *"already exists"* ]]; then
+      print "already uploaded, skipping"
+    else
+      print "upload failed: $response"
+      exit 1
+    fi
+  done
+done
+
+symbols_uploaded=1; save_info symbols_uploaded
