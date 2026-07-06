@@ -5,9 +5,15 @@
 # offsetIntoBinaryTextSegment values are offsets from the __TEXT segment.
 #
 # Usage: make_symbol_map <dwarf_path> <arch> <uuid> [binary_name]
+#                        [app_build_version] [app_version] [bundle_id]
 # Outputs JSON to stdout:
 #   { "uuid": ..., "arch": ..., "binaryName": ...,
+#     "appBuildVersion": ..., "appVersion": ..., "bundleId": ...,
 #     "symbols": [[offset, "name"], ...] }  # sorted ascending by offset
+#
+# The app identity fields let the backend resolve a crashed binary UUID to
+# the build that shipped it (the crash payload's own version metadata is
+# stamped at upload time and unreliable across updates).
 
 import json
 import subprocess
@@ -74,6 +80,9 @@ def main():
         sys.exit(2)
     dwarf_path, arch, uuid = sys.argv[1:4]
     binary_name = sys.argv[4] if len(sys.argv) > 4 else dwarf_path.split("/")[-1]
+    app_build_version = sys.argv[5] if len(sys.argv) > 5 else None
+    app_version = sys.argv[6] if len(sys.argv) > 6 else None
+    bundle_id = sys.argv[7] if len(sys.argv) > 7 else None
 
     vmaddr = text_segment_vmaddr(dwarf_path, arch)
     symbols = text_symbols(dwarf_path, arch, vmaddr)
@@ -88,16 +97,19 @@ def main():
         deduped.append([offset, name])
         last_offset = offset
 
-    json.dump(
-        {
-            "uuid": uuid.upper(),
-            "arch": arch,
-            "binaryName": binary_name,
-            "symbols": deduped,
-        },
-        sys.stdout,
-        separators=(",", ":"),
-    )
+    output = {
+        "uuid": uuid.upper(),
+        "arch": arch,
+        "binaryName": binary_name,
+        "symbols": deduped,
+    }
+    if app_build_version:
+        output["appBuildVersion"] = app_build_version
+    if app_version:
+        output["appVersion"] = app_version
+    if bundle_id:
+        output["bundleId"] = bundle_id
+    json.dump(output, sys.stdout, separators=(",", ":"))
     print()
 
 

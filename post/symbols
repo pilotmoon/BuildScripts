@@ -5,10 +5,29 @@ set -eu; base=${0:a:h}/..; source $base/common; cd_info
 # api, for server-side symbolication of crash reports. one map per binary
 # slice, named symbolMaps/<UUID>.json. re-uploads of an existing name are
 # rejected by the server (409), which we treat as already done.
+#
+# usage: symbols [archive_path]
+# with no argument, uses the archive vars saved at archive time (the normal
+# auto flow). pass an .xcarchive path to backfill maps for an older build.
 
-# load the archive vars saved at archive time
-memo_vars vars_archive
-show ARCHIVE_DSYMS_PATH
+if [[ $# -ge 1 ]]; then
+  adhoc=1
+  ARCHIVE_PATH=$1
+  ARCHIVE_DSYMS_PATH=$ARCHIVE_PATH/dSYMs
+else
+  adhoc=''
+  # load the archive vars saved at archive time
+  memo_vars vars_archive
+fi
+show ARCHIVE_PATH ARCHIVE_DSYMS_PATH
+
+# app identity for this archive, stamped into the maps so the backend can
+# resolve crashed binary UUIDs to real build numbers
+appinfo() { /usr/libexec/PlistBuddy -c "Print :ApplicationProperties:$1" $ARCHIVE_PATH/Info.plist }
+app_build=$(appinfo CFBundleVersion)
+app_version=$(appinfo CFBundleShortVersionString)
+bundle_id=$(appinfo CFBundleIdentifier)
+show app_build app_version bundle_id
 
 for dwarf in $ARCHIVE_DSYMS_PATH/*.dSYM/Contents/Resources/DWARF/*(N); do
   binary_name=${dwarf:t}
@@ -18,7 +37,8 @@ for dwarf in $ARCHIVE_DSYMS_PATH/*.dSYM/Contents/Resources/DWARF/*(N); do
     map_name=symbolMaps/$uuid.json
     map_file=map-$uuid.json
     print "* generating $map_name ($arch)"
-    $base/bin/make_symbol_map $dwarf $arch $uuid $binary_name > $map_file
+    $base/bin/make_symbol_map $dwarf $arch $uuid $binary_name \
+      $app_build $app_version $bundle_id > $map_file
     [[ -s $map_file ]] || { print "generated map is empty"; exit 1 }
     print "* uploading $map_name ($(du -h $map_file | cut -f1 | tr -d ' '))"
     # note: no --ignore-stdin here; the request body is read from stdin
@@ -40,4 +60,6 @@ for dwarf in $ARCHIVE_DSYMS_PATH/*.dSYM/Contents/Resources/DWARF/*(N); do
   done
 done
 
-symbols_uploaded=1; save_info symbols_uploaded
+if [[ -z $adhoc ]]; then
+  symbols_uploaded=1; save_info symbols_uploaded
+fi
