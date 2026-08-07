@@ -30,6 +30,18 @@ echo; echo "* verifying with spctl"
 echo; echo "* verifying with lipo"
 /usr/bin/lipo $binary_path -detailed_info
 /usr/bin/lipo $binary_path -verify_arch x86_64 arm64
+
+# Embedded XPC services. spctl assesses nested code, but only as a pass/fail on the whole bundle,
+# and the lipo check above covers the main binary only — so a single-arch service could otherwise
+# ride along in a universal build unnoticed.
+for xpc in $app_path/Contents/XPCServices/*.xpc(N); do
+  echo; echo "* verifying embedded service ${xpc:t}"
+  /usr/bin/codesign --verify --strict --verbose=2 $xpc || (print "VERIFY FAILED"; exit 1)
+  /usr/bin/codesign -dvv $xpc
+  xpc_binary=($xpc/Contents/MacOS/*(.))
+  /usr/bin/lipo $xpc_binary -verify_arch x86_64 arm64 || (print "VERIFY FAILED"; exit 1)
+done
+
 verified=1
 save_info verified
 
