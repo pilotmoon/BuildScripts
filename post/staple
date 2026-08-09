@@ -9,8 +9,10 @@ echo "stapling ${app_path}"
 xcrun stapler staple $app_path
 
 # re-zip
+# --norsrc omits xattrs, whose AppleDouble (._*) entries break the code
+# signature when extracted by non-Apple unzippers
 echo "zipping stapled app to:" ${app_zip}
-/usr/bin/ditto -c -k --keepParent $app_path $app_zip
+/usr/bin/ditto -c -k --norsrc --keepParent $app_path $app_zip
 
 # add png app icon into archive for setapp
 appicon=$project_dir/AppIcon.png

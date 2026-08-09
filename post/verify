@@ -11,6 +11,13 @@ done
 # load vars
 load_info app_zip
 
+# AppleDouble (._*) entries extract as literal files in non-Apple unzippers,
+# breaking the code signature
+echo "* checking zip for AppleDouble entries"
+if /usr/bin/zipinfo -1 $app_zip | grep -E '(^|/)\._|^__MACOSX'; then
+  print "VERIFY FAILED: zip contains AppleDouble entries"; exit 1
+fi
+
 # unzip and verify signing
 verify_dir=${PWD}/verify
 mkdir -p $verify_dir; rm -rf $verify_dir/*.app(N)

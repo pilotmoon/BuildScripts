@@ -62,10 +62,12 @@ print -n "* zipping dsyms..."
 print "done"
 
 # make app zip
+# --norsrc omits xattrs, whose AppleDouble (._*) entries break the code
+# signature when extracted by non-Apple unzippers
 app_path=${export_path}/${PRODUCT_NAME}.app; show app_path
 app_zip=${PWD}/${slug}.zip; show app_zip
 print -n "* zipping app..."
-/usr/bin/ditto -c -k --keepParent $app_path $app_zip
+/usr/bin/ditto -c -k --norsrc --keepParent $app_path $app_zip
 print "done"
 
 # release notes
