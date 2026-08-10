@@ -49,6 +49,16 @@ for xpc in $app_path/Contents/XPCServices/*.xpc(N); do
   /usr/bin/lipo $xpc_binary -verify_arch x86_64 arm64 || (print "VERIFY FAILED"; exit 1)
 done
 
+# Helper tools (the event monitor), same reasoning: the binary_path glob above matches plain
+# files directly in Contents/MacOS only, so nothing arch-checks the Helper subdirectory — and a
+# single-arch monitor is a dead app on the other architecture.
+for helper in $app_path/Contents/MacOS/Helper/*(N.); do
+  echo; echo "* verifying helper ${helper:t}"
+  /usr/bin/codesign --verify --strict --verbose=2 $helper || (print "VERIFY FAILED"; exit 1)
+  /usr/bin/codesign -dvv $helper
+  /usr/bin/lipo $helper -verify_arch x86_64 arm64 || (print "VERIFY FAILED"; exit 1)
+done
+
 verified=1
 save_info verified
 
