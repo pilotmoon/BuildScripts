@@ -4,7 +4,11 @@ set -eu; base=${0:a:h}/..; source $base/common; cd_info
 # generate symbol maps from the archive dSYMs and upload them to the files
 # api, for server-side symbolication of crash reports. one map per binary
 # slice, named symbolMaps/<UUID>.json. re-uploads of an existing name are
-# rejected by the server (409), which we treat as already done.
+# rejected by the server (409): if the existing map carries the same build
+# number this is a re-run and we skip, but any other stamp means this
+# binary is byte-identical to a different build (nothing compiled changed
+# between them), and we fail the build -- crash reports from the new build
+# would all be attributed to the old one (see builds 6157/6159, Aug 2026).
 #
 # usage: symbols [archive_path]
 # with no argument, uses the archive vars saved at archive time (the normal
@@ -52,7 +56,20 @@ for dwarf in $ARCHIVE_DSYMS_PATH/*.dSYM/Contents/Resources/DWARF/*(N); do
     if [[ $upload_status -eq 0 ]]; then
       print "uploaded"
     elif [[ $response == *"409"* || $response == *"already exists"* ]]; then
-      print "already uploaded, skipping"
+      existing_build=$(http --check-status GET \
+        "$PILOTMOON_FILES_API_URL/download/$map_name" \
+        Authorization:"Bearer $PILOTMOON_FILES_API_KEY" 2>/dev/null \
+        | jq -r '.appBuildVersion // empty' 2>/dev/null) || existing_build=''
+      if [[ $existing_build == $app_build ]]; then
+        print "already uploaded by build $app_build, skipping"
+      else
+        print "ERROR: $map_name already exists, stamped for build" \
+          "${existing_build:-(unstamped)} -- this binary is identical to" \
+          "that build's. Change something compiled into the binary (not" \
+          "just resources) and rebuild, or crash reports from build" \
+          "$app_build will be misattributed."
+        exit 1
+      fi
     else
       print "upload failed: $response"
       exit 1
