@@ -24,6 +24,14 @@ mkdir -p $verify_dir; rm -rf $verify_dir/*.app(N)
 echo "unzipping to $verify_dir"
 /usr/bin/ditto -xk $app_zip $verify_dir
 
+# lipo in Xcode 27.0 rejects more than one arch after -verify_arch, despite
+# documenting it, so verify the archs one at a time
+function verify_archs { # 1:binary
+  for arch in x86_64 arm64; do
+    /usr/bin/lipo $1 -verify_arch $arch || return 1
+  done
+}
+
 # infer .app path
 app_path=($verify_dir/*.app(F)) # (F) expands non-empty directories
 binary_path=($app_path/Contents/MacOS/*(.))  # (.) expands plain files only
@@ -36,7 +44,7 @@ echo; echo "* verifying with spctl"
 
 echo; echo "* verifying with lipo"
 /usr/bin/lipo $binary_path -detailed_info
-/usr/bin/lipo $binary_path -verify_arch x86_64 arm64
+verify_archs $binary_path || (print "VERIFY FAILED"; exit 1)
 
 # Embedded XPC services. spctl assesses nested code, but only as a pass/fail on the whole bundle,
 # and the lipo check above covers the main binary only — so a single-arch service could otherwise
@@ -46,7 +54,7 @@ for xpc in $app_path/Contents/XPCServices/*.xpc(N); do
   /usr/bin/codesign --verify --strict --verbose=2 $xpc || (print "VERIFY FAILED"; exit 1)
   /usr/bin/codesign -dvv $xpc
   xpc_binary=($xpc/Contents/MacOS/*(.))
-  /usr/bin/lipo $xpc_binary -verify_arch x86_64 arm64 || (print "VERIFY FAILED"; exit 1)
+  verify_archs $xpc_binary || (print "VERIFY FAILED"; exit 1)
 done
 
 # Helper tools (the event monitor), same reasoning: the binary_path glob above matches plain
@@ -56,7 +64,7 @@ for helper in $app_path/Contents/MacOS/Helper/*(N.); do
   echo; echo "* verifying helper ${helper:t}"
   /usr/bin/codesign --verify --strict --verbose=2 $helper || (print "VERIFY FAILED"; exit 1)
   /usr/bin/codesign -dvv $helper
-  /usr/bin/lipo $helper -verify_arch x86_64 arm64 || (print "VERIFY FAILED"; exit 1)
+  verify_archs $helper || (print "VERIFY FAILED"; exit 1)
 done
 
 verified=1
