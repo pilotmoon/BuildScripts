@@ -27,15 +27,23 @@ print '* exporting archive...'
 # get app info
 print '* examining exported info.plist...'
 info() { /usr/libexec/PlistBuddy -c "Print :$1" $export_path/$INFOPLIST_PATH }
-meta() { /usr/libexec/PlistBuddy -c "Print :$1" $export_path/$UNLOCALIZED_RESOURCES_FOLDER_PATH/Meta.plist }
+meta_path=$export_path/$UNLOCALIZED_RESOURCES_FOLDER_PATH/Meta.plist
+meta() { /usr/libexec/PlistBuddy -c "Print :$1" $meta_path }
 version=$(info CFBundleShortVersionString)
 build=$(info CFBundleVersion)
 bundle_id=$(info CFBundleIdentifier)
 channel=$(info PilotmoonReleaseChannel)
 edition=$(info PilotmoonReleaseEdition)
 min_system=$(info LSMinimumSystemVersion)
-build_date=$(plist_to_releases_date "$(meta AppBuildDate)")
-effective_date=$(plist_to_releases_date "$(meta AppEffectiveDate)")
+# apps that don't bundle a Meta.plist get the start of today for both dates
+if [[ -f $meta_path ]]; then
+  build_date=$(plist_to_releases_date "$(meta AppBuildDate)")
+  effective_date=$(plist_to_releases_date "$(meta AppEffectiveDate)")
+else
+  print "* no Meta.plist, using start of today for build and effective dates"
+  build_date=$(plist_to_releases_date "$(iso_to_plist_date $(current_iso_date_start_of_day))")
+  effective_date=$build_date
+fi
 show version build bundle_id channel edition min_system build_date effective_date
 
 # get architectures
