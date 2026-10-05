@@ -24,6 +24,11 @@ else
   adhoc=''
   # load the archive vars saved at archive time
   memo_vars vars_archive
+  # projects without crash reporting can opt out of the upload
+  if [[ ${BUILDSCRIPTS_UPLOAD_SYMBOLS:-YES} == NO ]]; then
+    print "symbol upload disabled by BUILDSCRIPTS_UPLOAD_SYMBOLS"
+    exit 0
+  fi
 fi
 show ARCHIVE_PATH ARCHIVE_DSYMS_PATH
 
